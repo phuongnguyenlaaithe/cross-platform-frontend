@@ -17,10 +17,10 @@ const data = [
   { category: "Vegetables", items: [{ name: "Carrots", quantity: "1 kg" }] },
 ];
 
-const ShoppingList = () => {
+const ShoppingList = ({ navigation }) => {
   return (
     <View>
-      <AppHeader />
+      <AppHeader navigation={navigation} showBackButton={true} />
       <View style={styles.container}>
         <View style={styles.header}>
           <TextInput style={styles.searchInput} placeholder="Search" />

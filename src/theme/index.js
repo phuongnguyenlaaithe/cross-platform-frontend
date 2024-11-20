@@ -19,6 +19,12 @@ export default {
     medium: 16,
     large: 24,
   },
+  padding: {
+    tiny: 4,
+    small: 8,
+    medium: 16,
+    large: 24,
+  },
   borderRadius: {
     small: 4,
     medium: 8,

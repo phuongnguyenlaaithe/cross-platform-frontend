@@ -1,15 +1,19 @@
 import React from "react";
+import theme from "../theme";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import theme from "../theme/index";
-
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-const AppHeader = () => {
+const AppHeader = ({ navigation, showBackButton = false }) => {
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity style={styles.iconContainer}>
-        <Icon name="menu" size={24} color={theme.colors.black} />
-      </TouchableOpacity>
+      {showBackButton && (
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Icon name="arrow-back" size={24} color={theme.colors.black} />
+        </TouchableOpacity>
+      )}
       <Text style={styles.appTitle}>ShoppingPal</Text>
     </View>
   );
@@ -19,18 +23,21 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     padding: theme.spacing.medium,
     backgroundColor: theme.colors.bgLight,
     ...theme.shadows.card,
+    position: "relative",
   },
-  iconContainer: {
-    marginRight: theme.spacing.medium,
+  backButton: {
+    position: "absolute",
+    left: theme.spacing.medium,
   },
   appTitle: {
     color: theme.colors.black,
     fontSize: 20,
     fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
