@@ -13,7 +13,7 @@ const Home = ({ navigation }) => {
             <View key={index} style={thisStyles.buttonWrapper}>
               <CommonButton
                 title={button.title}
-                size="Medium"
+                size="Large"
                 type="Primary"
                 icon={button.icon}
                 onPress={() => {

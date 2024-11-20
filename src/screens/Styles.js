@@ -9,20 +9,51 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: theme.padding.medium,
+    padding: theme.spacing.medium,
     backgroundColor: theme.colors.bgLight,
+  },
+  item: {
+    flex: 1,
+    padding: theme.spacing.small,
+    backgroundColor: theme.colors.white,
+  },
+  card: {
+    backgroundColor: theme.colors.white,
+    padding: theme.spacing.medium,
+    borderRadius: theme.borderRadius.medium,
+    ...theme.shadows.card,
+  },
+  headerItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: theme.spacing.medium,
   },
   // Title styles
   title2: {
-    color: theme.colors.black,
+    color: theme.colors.textPrimary,
     fontSize: 18,
     fontWeight: "bold",
+  },
+  title3: {
+    color: theme.colors.textPrimary,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  // Input styles
+  input: {
+    backgroundColor: theme.colors.white,
+    paddingHorizontal: theme.spacing.medium,
+    paddingVertical: theme.spacing.small,
+    borderRadius: theme.borderRadius.full,
+    width: "100%",
+    ...theme.shadows.button,
   },
   // Button styles
   buttonPrimarySmall: {
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: theme.borderRadius.small,
+    borderRadius: theme.borderRadius.full,
     backgroundColor: theme.colors.primary,
     ...theme.shadows.button,
     flexDirection: "row",
@@ -36,7 +67,7 @@ const styles = StyleSheet.create({
   buttonSecondarySmall: {
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: theme.borderRadius.small,
+    borderRadius: theme.borderRadius.full,
     backgroundColor: theme.colors.secondary,
     ...theme.shadows.button,
     flexDirection: "row",
@@ -50,7 +81,7 @@ const styles = StyleSheet.create({
   buttonPrimaryMedium: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    borderRadius: theme.borderRadius.medium,
+    borderRadius: theme.borderRadius.full,
     backgroundColor: theme.colors.primary,
     ...theme.shadows.button,
     flexDirection: "row",
@@ -64,7 +95,7 @@ const styles = StyleSheet.create({
   buttonSecondaryMedium: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    borderRadius: theme.borderRadius.medium,
+    borderRadius: theme.borderRadius.full,
     backgroundColor: theme.colors.secondary,
     ...theme.shadows.button,
     flexDirection: "row",
@@ -103,6 +134,7 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
     fontWeight: "bold",
   },
+  // Icon styles
   iconSmall: {
     marginRight: 4,
   },
@@ -111,6 +143,12 @@ const styles = StyleSheet.create({
   },
   iconLarge: {
     marginRight: 12,
+  },
+  //
+  divider: {
+    height: 1,
+    backgroundColor: theme.colors.secondary,
+    marginVertical: theme.spacing.tiny,
   },
 });
 
