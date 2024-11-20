@@ -103,6 +103,12 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
     fontWeight: "bold",
   },
+  iconSmall: {
+    marginRight: 4,
+  },
+  iconMedium: {
+    marginRight: 8,
+  },
   iconLarge: {
     marginRight: 12,
   },
