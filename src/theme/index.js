@@ -23,6 +23,7 @@ export default {
     small: 4,
     medium: 8,
     large: 16,
+    full: 999,
   },
   shadows: {
     card: {
