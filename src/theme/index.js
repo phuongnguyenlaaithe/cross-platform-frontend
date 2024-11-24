@@ -6,7 +6,7 @@ export default {
     bgDark: "#d6b3ff",
     textPrimary: "#333333",
     textSecondary: "#666666",
-    white: "#ececed",
+    white: "#ffffff",
     black: "#2e2e2f",
   },
   fonts: {
