@@ -29,9 +29,9 @@ export const authSlice = createSlice({
       state.login.currentUser = action.payload;
       state.login.error = false;
     },
-    loginFailed: (state, action) => {
+    loginFailed: (state) => {
       state.login.isFetching = false;
-      state.login.error = action.payload;
+      state.login.error = true;
     },
 
     logoutStart: state => {
@@ -54,9 +54,9 @@ export const authSlice = createSlice({
       state.register.sucess = true;
       state.register.error = false;
     },
-    registerFailed: (state, action) => {
+    registerFailed: (state) => {
       state.register.isFetching = false;
-      state.register.error = action.payload;
+      state.register.error = true;
     }
   },
 });

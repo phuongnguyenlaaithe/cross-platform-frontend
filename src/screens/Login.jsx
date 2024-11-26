@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
       borderRadius: 10,
     },
     loginButton: {
-      backgroundColor: theme.colors.bgDark,
+      backgroundColor: theme.colors.primary,
       borderRadius: 10,
       paddingVertical: 8,
     },

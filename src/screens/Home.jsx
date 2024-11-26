@@ -68,7 +68,7 @@ const buttonList = [
   },
   {
     title: "Create Food List",
-    navigateTo: "CreateFoodList",
+    navigateTo: "FoodList",
     icon: "list",
   },
   {

@@ -19,7 +19,7 @@ export const loginUser = async (user, dispatch, navigate) => {
     try {
       await axios.post("http://localhost:5000/user/auth/register", user);
       dispatch(registerSuccess());
-      callback(); // Trigger pop-up and navigation on success
+      callback(); 
     } catch (error) {
       dispatch(registerFailed());
       console.error("Registration error:", error);
