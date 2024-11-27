@@ -72,8 +72,8 @@ const buttonList = [
     icon: "list",
   },
   {
-    title: "Create Group",
-    navigateTo: "CreateGroup",
+    title: "Group",
+    navigateTo: "Group",
     icon: "group",
   },
 ];
