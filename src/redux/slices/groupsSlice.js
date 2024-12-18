@@ -20,6 +20,9 @@ const groupsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    leaveGroup: (state, action) => {
+      state.groups = state.groups.filter((group) => group.id !== action.payload);
+    },
     addGroup: (state, action) => {
       state.groups.push(action.payload);
     },

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:5000";
+const baseURL = "https://266d-118-70-133-29.ngrok-free.app";
 let axiosReduxStore
 
 export const injectStore = mainStore => {
@@ -12,10 +12,11 @@ const api = axios.create({
   withCredentials: false,
   headers: {
     "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "69420"
   },
 });
 
-api.defaults.baseURL = 'http://localhost:5000'
+api.defaults.baseURL = 'https://266d-118-70-133-29.ngrok-free.app'
 
 
 // Interceptor để thêm token vào header

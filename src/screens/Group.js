@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,113 +9,131 @@ import {
 } from "react-native";
 import { Image } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { getGroups, addGroup } from "../redux/apiRequests/groupRequest";
-import * as ImagePicker from "expo-image-picker";
+import { createGroupAPI, getGroupsAPI } from "../redux/apiRequests/groupRequest";
 import theme from "../theme/index";
+import AppHeader from "../components/AppHeader";
 
-const Group = () => {
+// Group Item Component
+const GroupItem = React.memo(({ group, onPress }) => (
+  <TouchableOpacity
+    style={styles.groupItem}
+    onPress={onPress}
+    accessible={true}
+    accessibilityLabel={`Group ${group.name}, ${group.users?.length || 1} members`}
+  >
+    <View style={styles.groupInfo}>
+      <Image
+        alt="group-avatar"
+        source={
+          group.photoUrl
+            ? { uri: group.photoUrl }
+            : require("../../assets/adaptive-icon.png")
+        }
+        style={styles.groupAvatar}
+      />
+      <Text style={styles.groupName}>{group.name}</Text>
+    </View>
+    <Text style={styles.groupMembers}>{group.users?.length || 1} Members</Text>
+  </TouchableOpacity>
+));
+
+GroupItem.displayName = "GroupItem";
+
+const Group = ({ navigation }) => {
   const dispatch = useDispatch();
   const { groups, isLoading } = useSelector((state) => state.groups);
 
   const [groupName, setGroupName] = useState("");
-  const [image, setImage] = useState({ file: null, uri: "" });
-
+  console.log(groups);
   useEffect(() => {
-    getGroups(dispatch);
+    getGroupsAPI(dispatch);
   }, [dispatch]);
-
-  const handleAddImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      setImage({ file: result.assets[0].file, uri: result.assets[0].uri });
-    }
-  };
 
   const handleCreateGroup = async () => {
     if (groupName.trim()) {
-      await addGroup({ name: groupName, image: image }, dispatch);
-
-      setGroupName("");
-      setImage({ file: null, uri: "" });
+      try {
+        await createGroupAPI({ name: groupName }, dispatch);
+        setGroupName("");
+      } catch (error) {
+        console.error("Failed to create group:", error);
+      }
+    } else {
+      alert("Please enter a valid group name.");
     }
   };
 
-  // Render nhóm
-  const renderGroup = ({ item }) => (
-    <View style={styles.groupItem}>
-      <Text style={styles.groupName}>{item.name}</Text>
-      <Text style={styles.groupMembers}>{item.users.length || 1} Members</Text>
-    </View>
+  const renderGroup = useCallback(
+    ({ item }) => (
+      <GroupItem
+        group={item}
+        onPress={() => navigation.navigate("GroupDetail", { groupId: item.id })}
+      />
+    ),
+    [navigation]
   );
 
+  console.log('groups', groups)
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>ShoppingPal</Text>
-      <Text style={styles.subtitle}>Family Groups</Text>
+    <>
+      {/* AppHeader nằm ngoài View root để không bị ảnh hưởng padding */}
+      <AppHeader navigation={navigation} showBackButton={true} />
+      <View style={styles.root}>
+        <Text style={styles.title}>Family Groups</Text>
 
-      <Text style={styles.sectionHeader}>Your Groups</Text>
-      {isLoading ? (
-        <Text>Đang tải...</Text>
-      ) : (
-        <FlatList
-          data={groups}
-          renderItem={renderGroup}
-          keyExtractor={(item, index) => index.toString()}
-          style={styles.groupList}
-        />
-      )}
+        <Text style={styles.sectionHeader}>Your Groups</Text>
+        {isLoading ? (
+          <Text>Loading...</Text>
+        ) : (
+          <FlatList
+            data={groups}
+            renderItem={renderGroup}
+            keyExtractor={(item) => item?.id?.toString()}
+            style={styles.groupList}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
 
-      <View style={styles.form}>
-        <Text style={styles.sectionHeader}>Create New Group</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter group name"
-          placeholderTextColor={theme.colors.textSecondary}
-          value={groupName}
-          onChangeText={setGroupName}
-        />
-        <TouchableOpacity style={styles.imageBox} onPress={handleAddImage}>
-          {image.uri ? (
-            <Image source={{ uri: image.uri }} style={styles.imagePreview} />
-          ) : (
-            <Text color={theme.colors.textSecondary}>+ Upload avatar</Text>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={handleCreateGroup}>
-          <Text style={styles.buttonText}>Create Group</Text>
-        </TouchableOpacity>
+        <View style={styles.form}>
+          <Text style={styles.sectionHeader}>Create New Group</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter group name"
+            placeholderTextColor={theme.colors.textSecondary}
+            value={groupName}
+            onChangeText={setGroupName}
+          />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleCreateGroup}
+            accessible={true}
+            accessibilityLabel="Create group button"
+          >
+            <Text style={styles.buttonText}>Create Group</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  root: {
     flex: 1,
-    backgroundColor: "#fff",
-    padding: 20,
+    backgroundColor: theme.colors.bgLight,
+    padding: 20, // Padding áp dụng chỉ với nội dung bên dưới AppHeader
   },
   title: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
-    textAlign: "center",
+    textAlign: "left",
     marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: "center",
-    marginBottom: 20,
+    marginTop: 20,
   },
   sectionHeader: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
+    color: theme.colors.textPrimary,
   },
   groupList: {
     marginBottom: 20,
@@ -123,9 +141,20 @@ const styles = StyleSheet.create({
   groupItem: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
+  },
+  groupInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  groupAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
   },
   groupName: {
     fontSize: 16,
@@ -133,7 +162,7 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
   },
   groupMembers: {
-    fontSize: 16,
+    fontSize: 14,
     color: theme.colors.textSecondary,
   },
   form: {
@@ -149,26 +178,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: "#fff",
   },
-  imageBox: {
-    height: 100,
-    borderRadius: 10,
-    justifyContent: "center",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    borderWidth: 2,     
-    borderColor: theme.colors.primary,
-    marginBottom: 20,
-  },
-  imagePreview: {
-    width: "100%",      
-    height: "100%", 
-    borderRadius: 10,
-  },
-  placeholderText: {
-    fontSize: 10,
-    color: theme.colors.textSecondary,
-    fontWeight: "bold",
-  },  
   button: {
     backgroundColor: theme.colors.primary,
     padding: 15,
