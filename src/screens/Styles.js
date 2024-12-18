@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.full,
     width: "100%",
     ...theme.shadows.button,
+    height: 40,
   },
   // Button styles
   buttonPrimarySmall: {
@@ -107,8 +108,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   buttonPrimaryLarge: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: 40,
+    paddingHorizontal: 40,
     borderRadius: theme.borderRadius.large,
     backgroundColor: theme.colors.primary,
     ...theme.shadows.button,
@@ -150,6 +151,28 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.secondary,
     marginVertical: theme.spacing.tiny,
   },
+
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: theme.colors.white,
+    borderRadius: theme.borderRadius.medium,
+    padding: theme.spacing.large,
+    marginBottom: theme.spacing.medium,
+    shadowColor: theme.colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    marginHorizontal: theme.spacing.medium,
+  },
+
 });
 
 export default styles;

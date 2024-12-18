@@ -1,10 +1,11 @@
 import axios from "axios";
 import { loginFailed, loginStart, loginSuccess, registerStart, registerSuccess, registerFailed } from "../slices/authSlice";
+import { BASE_URL } from '../../constants';
 
 export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
     try {
-      const res = await axios.post("http://localhost:5000/user/auth/login", user);
+      const res = await axios.post(`${BASE_URL}/user/auth/login`, user);
       dispatch(loginSuccess(res.data));
       navigate('Home');
     } catch (error) {
@@ -17,7 +18,7 @@ export const loginUser = async (user, dispatch, navigate) => {
   export const registerUser = async (user, dispatch, callback) => {
     dispatch(registerStart());
     try {
-      await axios.post("http://localhost:5000/user/auth/register", user);
+      await axios.post(`${BASE_URL}/user/auth/register`, user);
       dispatch(registerSuccess());
       callback(); 
     } catch (error) {

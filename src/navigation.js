@@ -8,6 +8,7 @@ import HomeScreen from "./screens/Home";
 import ShoppingList from "./screens/ShoppingList";
 import RegisterScreen from './screens/Register';
 import FoodList from "./screens/FoodList";
+import FridgeList from "./screens/FridgeList";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ function Navigation() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="ShoppingList" component={ShoppingList} />
         <Stack.Screen name="FoodList" component={FoodList} />
+        <Stack.Screen name="FridgeList" component={FridgeList} />
       </Stack.Navigator>
     </NavigationContainer>
   );

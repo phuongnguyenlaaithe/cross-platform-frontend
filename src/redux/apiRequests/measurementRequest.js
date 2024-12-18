@@ -10,6 +10,8 @@ import {
     addMeasurementSuccess,
     addMeasurementFailed,
     } from "../slices/measurementSlice";
+import { BASE_URL } from '../../constants';
+
 
 export const getAllMeasurement = async (accessToken, dispatch) => {
     if (!accessToken) {
@@ -17,7 +19,7 @@ export const getAllMeasurement = async (accessToken, dispatch) => {
     }
     dispatch(getMeasurementStart());
     try {
-      const res = await axios.get("http://localhost:5000/admin/measurement", {
+      const res = await axios.get(`${BASE_URL}/admin/measurement`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       dispatch(getMeasurementSuccess(res.data));
@@ -29,7 +31,7 @@ export const getAllMeasurement = async (accessToken, dispatch) => {
 export const deleteMeasurement = async (accessToken, dispatch, id) => {
     dispatch(deleteMeasurementStart());
     try {
-      await axios.delete(`http://localhost:5000/admin/measurement/${id}`, {
+      await axios.delete(`${BASE_URL}/admin/measurement/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       dispatch(deleteMeasurementSuccess(id));
@@ -43,7 +45,7 @@ export const deleteMeasurement = async (accessToken, dispatch, id) => {
   dispatch(addMeasurementStart());
 
   try {
-    const res = await axios.post(`http://localhost:5000/admin/measurement`, data, {
+    const res = await axios.post(`${BASE_URL}/admin/measurement`, data, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

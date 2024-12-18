@@ -10,6 +10,7 @@ import {
     addCategorySuccess,
     addCategoryFailed,
     } from "../slices/categorySlice";
+import { BASE_URL } from '../../constants';
 
 export const getAllCategory = async (accessToken, dispatch) => {
     if (!accessToken) {
@@ -18,7 +19,7 @@ export const getAllCategory = async (accessToken, dispatch) => {
     }
     dispatch(getCategoryStart());
     try {
-      const res = await axios.get("http://localhost:5000/admin/category", {
+      const res = await axios.get(`${BASE_URL}/admin/category`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       dispatch(getCategorySuccess(res.data));
@@ -30,7 +31,7 @@ export const getAllCategory = async (accessToken, dispatch) => {
 export const deleteCategory = async (accessToken, dispatch, id) => {
     dispatch(deleteCategoryStart());
     try {
-      await axios.delete(`http://localhost:5000/admin/category/${id}`, {
+      await axios.delete(`${BASE_URL}/admin/category/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       dispatch(deleteCategorySuccess(id));
@@ -44,7 +45,7 @@ export const deleteCategory = async (accessToken, dispatch, id) => {
   dispatch(addCategoryStart());
 
   try {
-    const res = await axios.post(`http://localhost:5000/admin/category`, data, {
+    const res = await axios.post(`${BASE_URL}/admin/category`, data, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

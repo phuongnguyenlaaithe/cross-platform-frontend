@@ -3,6 +3,7 @@ import authSlice from './slices/authSlice'
 import foodSlice from './slices/foodSlice'
 import categorySlice from './slices/categorySlice'
 import measurementSlice from './slices/measurementSlice'
+import fridgeItemSlice from './slices/fridgeItemSlice'
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     food: foodSlice,
     category: categorySlice,
     measurement: measurementSlice,
+    fridgeItem: fridgeItemSlice,
   },
 })

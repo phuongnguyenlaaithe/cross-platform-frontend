@@ -32,12 +32,14 @@ const styles = StyleSheet.create({
   backButton: {
     position: "absolute",
     left: theme.spacing.medium,
+    paddingTop: 50,
   },
   appTitle: {
     color: theme.colors.black,
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
+    paddingTop: 50,
   },
 });
 
