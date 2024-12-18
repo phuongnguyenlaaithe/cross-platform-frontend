@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../redux/apiRequests/authRequest';
 import theme from "../theme/index";
 
-
 const LoginScreen = () => {
   const [email, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');

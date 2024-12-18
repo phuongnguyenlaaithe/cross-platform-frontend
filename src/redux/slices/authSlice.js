@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const authSlice = createSlice({
   name: "auth",
@@ -8,16 +9,15 @@ export const authSlice = createSlice({
       isFetching: false,
       error: false,
     },
-
     logout: {
       isFetching: false,
       error: false,
-      sucess: false,
+      success: false,
     },
     register: {
       isFetching: false,
       error: false,
-      sucess: false,
+      success: false,
     },
   },
   reducers: {
@@ -28,6 +28,9 @@ export const authSlice = createSlice({
       state.login.isFetching = false;
       state.login.currentUser = action.payload;
       state.login.error = false;
+      // Lưu accessToken và refreshToken vào AsyncStorage
+      AsyncStorage.setItem('accessToken', action.payload.accessToken);
+      AsyncStorage.setItem('refreshToken', action.payload.refreshToken);
     },
     loginFailed: (state) => {
       state.login.isFetching = false;
@@ -39,8 +42,11 @@ export const authSlice = createSlice({
     },
     logoutSuccess: (state) => {
       state.logout.isFetching = false;
-      state.logout.currentUser = null;
+      state.login.currentUser = null;
       state.logout.error = false;
+      // Xóa accessToken và refreshToken khỏi AsyncStorage
+      AsyncStorage.removeItem('accessToken');
+      AsyncStorage.removeItem('refreshToken');
     },
     logoutFailed: state => {
       state.login.isFetching = false;
@@ -51,7 +57,7 @@ export const authSlice = createSlice({
     },
     registerSuccess: (state) => {
       state.register.isFetching = false;
-      state.register.sucess = true;
+      state.register.success = true;
       state.register.error = false;
     },
     registerFailed: (state) => {
@@ -63,4 +69,4 @@ export const authSlice = createSlice({
 
 export const { loginStart, loginSuccess, loginFailed, logoutStart, logoutSuccess, logoutFailed, registerStart, registerSuccess, registerFailed } = authSlice.actions;
 
-export default authSlice.reducer; 
+export default authSlice.reducer;

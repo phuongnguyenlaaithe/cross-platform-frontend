@@ -1,14 +1,20 @@
+import React from 'react';
+import { Provider } from 'react-redux';
 import { PaperProvider } from 'react-native-paper';
 import Navigation from './src/navigation';
-import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
+import AuthLoader from './src/AuthLoader';
 
-export default function App() {
+const App = () => {
   return (
     <Provider store={store}>
       <PaperProvider>
-        <Navigation />
+        <AuthLoader>
+          <Navigation />
+        </AuthLoader>
       </PaperProvider>
     </Provider>
   );
-}
+};
+
+export default App;
