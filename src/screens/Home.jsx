@@ -36,7 +36,9 @@ const thisStyles = StyleSheet.create({
   },
   buttonWrapper: {
     width: "48%",
+    height: 130,
     marginBottom: 16,
+    justifyContent: "center",
   },
 });
 
@@ -53,7 +55,7 @@ const buttonList = [
   },
   {
     title: "Track Fridge Item",
-    navigateTo: "TrackFridgeItem",
+    navigateTo: "FridgeList",
     icon: "kitchen",
   },
   {
@@ -68,7 +70,7 @@ const buttonList = [
   },
   {
     title: "Create Food List",
-    navigateTo: "CreateFoodList",
+    navigateTo: "FoodList",
     icon: "list",
   },
   {

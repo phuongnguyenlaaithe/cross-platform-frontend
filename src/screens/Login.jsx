@@ -4,6 +4,7 @@ import { TextInput, Button, Title} from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../redux/apiRequests/authRequest';
+import theme from "../theme/index";
 
 const LoginScreen = () => {
   const [email, setUsername] = React.useState('');
@@ -29,10 +30,10 @@ const LoginScreen = () => {
           value={email}
           onChangeText={(text) => setUsername(text)}
           mode="outlined"
+          textColor={theme.colors.textPrimary}
+          outlineColor={theme.colors.primary}
+          activeOutlineColor={theme.colors.primary}
           style={styles.input}
-          textColor='#333333'
-          outlineColor='#a992e8'
-          activeOutlineColor='#a992e8'
         />
 
         {/* Password Input */}
@@ -42,10 +43,10 @@ const LoginScreen = () => {
           onChangeText={(text) => setPassword(text)}
           mode="outlined"
           secureTextEntry
+          textColor={theme.colors.textPrimary}
+          outlineColor={theme.colors.primary}
+          activeOutlineColor={theme.colors.primary}
           style={styles.input}
-          textColor='#333333'
-          outlineColor='#a992e8'
-          activeOutlineColor='#a992e8'
         />
 
         {/* Login Button */}
@@ -54,11 +55,11 @@ const LoginScreen = () => {
         </Button>
 
         {/* Forgot Password Link */}
-        <Text style={styles.forgotPassword}>Forgot Password?</Text>
+        <Text style={styles.forgotPassword }>Forgot Password?</Text>
 
         {/* Register Link */}
         <Text style={styles.registerText}>
-          New to MealPlan? <Text style={styles.registerLink}>Register</Text>
+          New to MealPlan? <Text style={styles.registerLink} onPress={() => navigation.navigate('Register')}>Register</Text>
         </Text>
       </View>
   );
@@ -76,34 +77,34 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       textAlign: 'center',
       marginBottom: 30,
-      color: '#333333',
+      color: theme.colors.textPrimary,
     },
     icon: {
       fontSize: 28,
-      color: '#A992E8',
+      color: theme.colors.primary,
     },
     input: {
       marginBottom: 20,
-      backgroundColor: '#E5E8FF',
+      backgroundColor: '#f0f0ff',
       borderRadius: 10,
     },
     loginButton: {
-      backgroundColor: '#D6B3FF',
+      backgroundColor: theme.colors.primary,
       borderRadius: 10,
       paddingVertical: 8,
     },
     forgotPassword: {
-      color: '#A992E8',
+      color: theme.colors.primary,
       textAlign: 'center',
       marginVertical: 10,
     },
     registerText: {
-      color: '#333333',
+      color: theme.colors.textPrimary,
       textAlign: 'center',
       marginTop: 20,
     },
     registerLink: {
-      color: '#A992E8',
+      color: theme.colors.primary,
       fontWeight: 'bold',
     },
   })
