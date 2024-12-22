@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Image } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import {
   addMemberAPI,
   removeMemberAPI,
@@ -18,29 +19,33 @@ import {
 import { leaveGroup } from "../redux/slices/groupsSlice";
 import * as ImagePicker from "expo-image-picker";
 import { AppHeader } from "../components";
-import api from "../utils/api";
 import theme from "../theme/index";
+import axios from "axios";
+import { BASE_URL } from "../constants";
+import styles from "../screens/Styles";
 
 const GroupDetail = ({ route, navigation }) => {
   const { groupId } = route.params;
   const dispatch = useDispatch();
-  const accessToken = useSelector((state) => state.auth.login.currentUser?.accessToken);
-  
+  const accessToken = useSelector(
+    (state) => state.auth.login.currentUser?.accessToken
+  );
+
   const group = useSelector((state) =>
     state.groups.groups.find((g) => g.id === groupId)
   );
 
-  console.log('groups', group)
-
   const user = useSelector((state) => state.auth.login.currentUser);
-  const isGroupAdmin = group.users.some(
+
+  const isGroupAdmin = true || group.users.some(
     (u) => u.userId === user.userId && u.role === "ADMIN"
   );
+
   const [userProfiles, setUserProfiles] = useState([]);
   const [email, setEmail] = useState("");
   const [groupPhoto, setGroupPhoto] = useState({
     file: null,
-    uri: group.photoURL || "",
+    uri: group.photoUrl || "",
   });
   const [groupName, setGroupName] = useState(group.name);
   const [isUpdatingInfo, setIsUpdatingInfo] = useState(false);
@@ -50,189 +55,191 @@ const GroupDetail = ({ route, navigation }) => {
       try {
         const profiles = await Promise.all(
           group.users.map(async (user) => {
-            const response = await api.get(`/user/profile/${user.userId}`);
-            console.log(response);
-            return response;
+            const response = await axios.get(
+              `${BASE_URL}/profile/${user.userId}`,
+              {
+                headers: { Authorization: `Bearer ${accessToken}` },
+              }
+            );
+            return response.data;
           })
         );
         setUserProfiles(profiles);
       } catch (error) {
-        console.error("Lỗi khi lấy profile người dùng:", error);
+        console.error("Error fetching user profiles:", error);
       }
     };
 
     fetchUserProfiles();
   }, [group.users]);
-  console.log(userProfiles);
 
   const handleAddMember = async () => {
-    if (email.trim()) {
-      const success = await addMemberAPI(groupId, [email], dispatch);
-      if (success) {
-        Alert.alert("Success", "Member added successfully!");
-        setEmail("");
-      } else {
-        Alert.alert("Error", "Failed to add member.");
-      }
-    } else {
-      Alert.alert("Error", "Please enter a valid email.");
-    }
+    await addMemberAPI(accessToken, groupId, [email], dispatch);
+    setEmail("");
   };
 
-  const handleRemoveMember = async (memberId) => {
-    const success = await removeMemberAPI(groupId, [memberId], dispatch);
-    if (success) {
-      Alert.alert("Success", "Member removed successfully!");
-    } else {
-      console.log("userProfile", userProfiles);
-      Alert.alert("Error", "Failed to remove member.");
-    }
+  const handleRemoveMember = async (userId) => {
+    await removeMemberAPI(accessToken, groupId, [userId], dispatch);
   };
 
   const handleLeftGroup = async () => {
-    const response = await api.patch(`/group/${groupId}/remove-member`, {
-      userIds: [user.id],
-    });
-    if (response.status === 200) {
-      dispatch(leaveGroup(groupId));
-      navigation.goBack();
-    } else {
-      Alert.alert("Error", "Failed to leave group.");
-    }
+    await removeMemberAPI(accessToken, groupId, [user.userId], dispatch);
+    dispatch(leaveGroup(groupId));
   };
 
   const handleChangeGroupPhoto = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ["images", "videos"],
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
       });
       if (!result.canceled) {
         setGroupPhoto({
-          file: result.assets[0].uri,
+          file: result.assets[0],
           uri: result.assets[0].uri,
         });
       }
+      setIsUpdatingInfo(true);
     } catch (error) {
       console.error("Error while picking image:", error);
     }
   };
 
   const handleUpdateGroupInfo = async () => {
-    try {
-      setIsUpdatingInfo(true);
-      const formData = new FormData();
-      if (groupPhoto.file) {
-        formData.append("image", groupPhoto.file);
-      }
-      formData.append("name", groupName);
-
-      const response = await updateGroupAPI(accessToken, groupId, formData, dispatch);
-      if (response.status === 200) {
-        Alert.alert("Success", "Group info updated successfully!");
-      } else {
-        Alert.alert("Error", "Failed to update group info.");
-      }
-    } catch (error) {
-      console.error("Error updating group info:", error);
-      Alert.alert("Error", "An unexpected error occurred.");
-    } finally {
-      setIsUpdatingInfo(false);
+    const formData = new FormData();
+    if (groupPhoto.file) {
+      formData.append("image", {
+        uri: groupPhoto.file.uri,
+        type: "image/png",
+        name: groupPhoto.file.name || "group_photo.png",
+      });
     }
+    formData.append("name", groupName);
+  
+    await updateGroupAPI(accessToken, dispatch, groupId, formData);
+    setIsUpdatingInfo(false);
   };
 
   const renderMember = ({ item }) => (
-    <View style={styles.memberItem}>
-      <View style={styles.memberInfo}>
+    <View style={groupDetailStyle.memberItem}>
+      <View style={groupDetailStyle.memberInfo}>
         <Image
           alt="member-avatar"
-          source={item.photoURL ? { uri: item.photoURL } : require("../../assets/adaptive-icon.png")}
-          style={styles.memberAvatar}
+          source={
+            item.photoURL
+              ? { uri: item.photoURL }
+              : require("../../assets/adaptive-icon.png")
+          }
+          style={groupDetailStyle.memberAvatar}
         />
-        <Text style={styles.memberName}>
+        <Text style={groupDetailStyle.memberName}>
           {item.name} {item.userId === user.userId ? " (You)" : ""}
         </Text>
       </View>
-      <TouchableOpacity
-        style={styles.removeButton}
-        onPress={() => handleRemoveMember(item.id)}
+      {isGroupAdmin && (
+        <TouchableOpacity
+        style={styles.deleteIconContainer}
+        onPress={() => handleRemoveMember(item.userId)}
       >
-        <Text style={styles.removeButtonText}>Remove</Text>
+        <Icon name="delete" size={24} color={theme.colors.textSecondary} />
       </TouchableOpacity>
+      )}
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={styles.root}>
       <AppHeader navigation={navigation} showBackButton={true} />
-      <View style={styles.groupInfo}>
-        <TouchableOpacity onPress={handleChangeGroupPhoto}>
-          <Image
-            source={groupPhoto.uri ? { uri: groupPhoto.uri } : require("../../assets/adaptive-icon.png")}
-            style={styles.groupImage}
-            alt="group-avatar"
-          />
-        </TouchableOpacity>
-        <TextInput
-          style={styles.groupNameInput}
-          value={groupName}
-          onChangeText={setGroupName}
-        />
-        {isUpdatingInfo && <Text style={styles.updatingText}>Updating...</Text>}
-        <TouchableOpacity style={styles.button} onPress={handleUpdateGroupInfo}>
-          <Text style={styles.buttonText}>Update Info</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text style={styles.sectionHeader}>Members</Text>
-      <FlatList
-        data={userProfiles}
-        renderItem={renderMember}
-        keyExtractor={(member) => member.userId.toString()}
-        style={styles.memberList}
-      />
-
-      {isGroupAdmin ? (
-        <View style={styles.form}>
-          <Text style={styles.sectionHeader}>Add Member</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter member's email"
-            placeholderTextColor={theme.colors.textSecondary}
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TouchableOpacity style={styles.button} onPress={handleAddMember}>
-            <Text style={styles.buttonText}>Add Member</Text>
+      <View style={styles.container}>
+        <View style={groupDetailStyle.groupInfo}>
+          <TouchableOpacity onPress={handleChangeGroupPhoto}>
+            <Image
+              source={
+                groupPhoto.uri
+                  ? { uri: groupPhoto.uri }
+                  : require("../../assets/adaptive-icon.png")
+              }
+              style={groupDetailStyle.groupImage}
+              alt="group-avatar"
+            />
           </TouchableOpacity>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TextInput
+              style={groupDetailStyle.groupNameInput}
+              value={groupName}
+              onChangeText={(text) => {
+                setGroupName(text);
+                setIsUpdatingInfo(true);
+              }}
+            />
+          </View>
         </View>
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={handleLeftGroup}>
-          <Text style={styles.buttonText}>Leave Group</Text>
-        </TouchableOpacity>
-      )}
+
+        {isUpdatingInfo && (
+          <TouchableOpacity
+            style={groupDetailStyle.updateButton}
+            onPress={handleUpdateGroupInfo}
+          >
+            <Text style={groupDetailStyle.buttonText}>Update</Text>
+          </TouchableOpacity>
+        )}
+
+        <Text style={groupDetailStyle.sectionHeader}>Members</Text>
+        {userProfiles.length > 0 && (
+          <FlatList
+            key={userProfiles?.id}
+            data={userProfiles}
+            renderItem={renderMember}
+            keyExtractor={(member) => member.id}
+            style={groupDetailStyle.memberList}
+          />
+        )}
+
+        {isGroupAdmin ? (
+          <View style={groupDetailStyle.form}>
+            <Text style={groupDetailStyle.sectionHeader}>Add Member</Text>
+            <TextInput
+              style={groupDetailStyle.input}
+              placeholder="Enter member's email"
+              placeholderTextColor={theme.colors.textSecondary}
+              value={email}
+              onChangeText={setEmail}
+            />
+            <TouchableOpacity
+              style={groupDetailStyle.button}
+              onPress={handleAddMember}
+            >
+              <Text style={groupDetailStyle.buttonText}>Add Member</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={groupDetailStyle.button}
+            onPress={handleLeftGroup}
+          >
+            <Text style={groupDetailStyle.buttonText}>Leave Group</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.bgLight,
-    padding: 20,
-  },
+const groupDetailStyle = StyleSheet.create({
   groupInfo: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
-    marginBottom: 20,
+    marginTop: 10,
   },
   groupImage: {
-    width: 100,
-    height: 100,
+    width: 75,
+    height: 75,
     borderRadius: 50,
-    marginBottom: 10,
+    marginBottom: theme.spacing.medium,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
   },
   groupNameInput: {
     fontSize: 18,
@@ -241,7 +248,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     borderBottomWidth: 1,
     borderColor: theme.colors.primary,
-    marginBottom: 10,
+    marginBottom: theme.spacing.small,
+    width: "60%",
   },
   updatingText: {
     fontSize: 14,
@@ -251,16 +259,16 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 16,
     fontWeight: "bold",
-    marginVertical: 10,
+    marginVertical: theme.spacing.medium,
   },
   memberList: {
-    marginBottom: 20,
+    marginBottom: theme.spacing.medium,
   },
   memberItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: theme.spacing.small,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
@@ -272,45 +280,51 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginRight: 10,
+    marginRight: theme.spacing.small,
   },
   memberName: {
     fontSize: 16,
     color: theme.colors.textPrimary,
-    fontWeight: "normal",
   },
   removeButton: {
-    backgroundColor: "#e74c3c",
-    padding: 8,
-    borderRadius: 50,
+    backgroundColor: theme.colors.danger,
+    paddingVertical: theme.spacing.small,
+    paddingHorizontal: theme.spacing.medium,
+    borderRadius: theme.borderRadius.full,
   },
   removeButtonText: {
-    color: "#fff",
+    color: theme.colors.white,
     fontWeight: "bold",
-  },
-  form: {
-    backgroundColor: "#f7f9ff",
-    padding: 20,
-    borderRadius: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 15,
-    backgroundColor: "#fff",
   },
   button: {
     backgroundColor: theme.colors.primary,
-    padding: 15,
-    borderRadius: 8,
+    paddingVertical: theme.spacing.small,
+    borderRadius: theme.borderRadius.medium,
+    marginVertical: theme.spacing.medium,
     alignItems: "center",
   },
+  updateButton: {
+    backgroundColor: theme.colors.primary,
+    paddingVertical: theme.spacing.small,
+    borderRadius: theme.borderRadius.medium,
+    marginVertical: theme.spacing.medium,
+    alignItems: "center",
+    width: "20%",
+    alignSelf: "center",
+  },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: theme.colors.white,
     fontWeight: "bold",
+  },
+  input: {
+    padding: theme.spacing.small,
+    borderRadius: theme.borderRadius.medium,
+    borderColor: theme.colors.primary,
+    borderWidth: 1,
+    marginBottom: theme.spacing.small,
+  },
+  form: {
+    marginBottom: theme.spacing.medium,
   },
 });
 

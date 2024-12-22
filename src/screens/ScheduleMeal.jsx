@@ -39,13 +39,6 @@ const ScheduleMeal = ({ navigation }) => {
     setModalVisible(true);
   };
 
-  console.log(
-    mealPlanItems.filter((item) =>
-      moment(item.timestamp).isSame(currentDate, "day")
-    )
-  );
-    console.log(currentDate);
-  console.log(mealPlanItems[1].timestamp);
   return (
     <View style={styles.root}>
       <AppHeader navigation={navigation} showBackButton={true} />

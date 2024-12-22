@@ -33,7 +33,7 @@ export const createGroupAPI = async (accessToken, group, dispatch) => {
   }
 };
 
-export const updateGroupAPI = async (accessToken, groupId, group, dispatch) => {
+export const updateGroupAPI = async (accessToken, dispatch, groupId, group) => {
   try {
     const res = await axios.patch(`${BASE_URL}/group/${groupId}`, group, {
       headers: {
@@ -41,10 +41,10 @@ export const updateGroupAPI = async (accessToken, groupId, group, dispatch) => {
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log("response", res.data);
     dispatch(updateGroup(res.data));
   } catch (error) {
     console.error("Lỗi khi cập nhật nhóm:", error);
-    alert("Lỗi khi cập nhật nhóm");
   }
 };
 
@@ -78,6 +78,7 @@ export const removeMemberAPI = async (
         headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
+    console.log("response", res.data.users);
     dispatch(updateGroup(res.data));
   } catch (error) {
     console.error("Lỗi khi xóa thành viên:", error);
