@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   addMemberAPI,
   removeMemberAPI,
+  updateGroupAPI,
 } from "../redux/apiRequests/groupRequest";
 import { leaveGroup } from "../redux/slices/groupsSlice";
 import * as ImagePicker from "expo-image-picker";
@@ -23,7 +24,8 @@ import theme from "../theme/index";
 const GroupDetail = ({ route, navigation }) => {
   const { groupId } = route.params;
   const dispatch = useDispatch();
-
+  const accessToken = useSelector((state) => state.auth.login.currentUser?.accessToken);
+  
   const group = useSelector((state) =>
     state.groups.groups.find((g) => g.id === groupId)
   );
@@ -35,7 +37,7 @@ const GroupDetail = ({ route, navigation }) => {
     (u) => u.userId === user.userId && u.role === "ADMIN"
   );
   const [userProfiles, setUserProfiles] = useState([]);
-  const [email, setEmail] = useState([]);
+  const [email, setEmail] = useState("");
   const [groupPhoto, setGroupPhoto] = useState({
     file: null,
     uri: group.photoURL || "",
@@ -49,7 +51,7 @@ const GroupDetail = ({ route, navigation }) => {
         const profiles = await Promise.all(
           group.users.map(async (user) => {
             const response = await api.get(`/user/profile/${user.userId}`);
-            console.log(response)
+            console.log(response);
             return response;
           })
         );
@@ -61,7 +63,7 @@ const GroupDetail = ({ route, navigation }) => {
 
     fetchUserProfiles();
   }, [group.users]);
-  console.log(userProfiles)
+  console.log(userProfiles);
 
   const handleAddMember = async () => {
     if (email.trim()) {
@@ -100,36 +102,52 @@ const GroupDetail = ({ route, navigation }) => {
   };
 
   const handleChangeGroupPhoto = async () => {
-    setIsUpdatingInfo(true);
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      setGroupPhoto({ file: result.assets[0].file, uri: result.assets[0].uri });
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      if (!result.canceled) {
+        setGroupPhoto({
+          file: result.assets[0].uri,
+          uri: result.assets[0].uri,
+        });
+      }
+    } catch (error) {
+      console.error("Error while picking image:", error);
     }
   };
 
   const handleUpdateGroupInfo = async () => {
-    const formData = new FormData();
-    formData.append("image", groupPhoto.file);
-    formData.append("name", group.name);
-    const response = await api.patch(`/group/${groupId}/update`, formData);
-    if (response.status === 200) {
-      Alert.alert("Success", "Group photo updated successfully!");
-    } else {
-      Alert.alert("Error", "Failed to update group photo.");
+    try {
+      setIsUpdatingInfo(true);
+      const formData = new FormData();
+      if (groupPhoto.file) {
+        formData.append("image", groupPhoto.file);
+      }
+      formData.append("name", groupName);
+
+      const response = await updateGroupAPI(accessToken, groupId, formData, dispatch);
+      if (response.status === 200) {
+        Alert.alert("Success", "Group info updated successfully!");
+      } else {
+        Alert.alert("Error", "Failed to update group info.");
+      }
+    } catch (error) {
+      console.error("Error updating group info:", error);
+      Alert.alert("Error", "An unexpected error occurred.");
+    } finally {
+      setIsUpdatingInfo(false);
     }
-    setIsUpdatingInfo(false)
-  }
+  };
 
   const renderMember = ({ item }) => (
     <View style={styles.memberItem}>
       <View style={styles.memberInfo}>
         <Image
-          alt="memeber-avatar"
+          alt="member-avatar"
           source={item.photoURL ? { uri: item.photoURL } : require("../../assets/adaptive-icon.png")}
           style={styles.memberAvatar}
         />
@@ -148,15 +166,24 @@ const GroupDetail = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <AppHeader navigation={navigation} showBackButton={true}/>
+      <AppHeader navigation={navigation} showBackButton={true} />
       <View style={styles.groupInfo}>
-        <Image
-          source={groupPhoto.uri ? { uri: groupPhoto.uri } : require("../../assets/adaptive-icon.png")}
-          style={styles.groupImage}
-          alt="group-avatar"
-          onPress={handleChangeGroupPhoto}
+        <TouchableOpacity onPress={handleChangeGroupPhoto}>
+          <Image
+            source={groupPhoto.uri ? { uri: groupPhoto.uri } : require("../../assets/adaptive-icon.png")}
+            style={styles.groupImage}
+            alt="group-avatar"
+          />
+        </TouchableOpacity>
+        <TextInput
+          style={styles.groupNameInput}
+          value={groupName}
+          onChangeText={setGroupName}
         />
-        <Text style={styles.groupName}>{groupName}</Text>
+        {isUpdatingInfo && <Text style={styles.updatingText}>Updating...</Text>}
+        <TouchableOpacity style={styles.button} onPress={handleUpdateGroupInfo}>
+          <Text style={styles.buttonText}>Update Info</Text>
+        </TouchableOpacity>
       </View>
 
       <Text style={styles.sectionHeader}>Members</Text>
@@ -197,6 +224,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   groupInfo: {
+    flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
   },
@@ -206,10 +234,19 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 10,
   },
-  groupName: {
-    fontSize: 20,
+  groupNameInput: {
+    fontSize: 18,
     fontWeight: "bold",
     color: theme.colors.textPrimary,
+    textAlign: "center",
+    borderBottomWidth: 1,
+    borderColor: theme.colors.primary,
+    marginBottom: 10,
+  },
+  updatingText: {
+    fontSize: 14,
+    color: theme.colors.textSecondary,
+    marginVertical: 5,
   },
   sectionHeader: {
     fontSize: 16,

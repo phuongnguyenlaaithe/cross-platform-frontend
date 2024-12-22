@@ -10,6 +10,7 @@ import FoodList from "./screens/FoodList";
 import FridgeList from "./screens/FridgeList";
 import Group from "./screens/Group";
 import GroupDetail from "./screens/GroupDetail";
+import ScheduleMeal from "./screens/ScheduleMeal";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ function Navigation() {
             <Stack.Screen name="FridgeList" component={FridgeList} />
             <Stack.Screen name="Group" component={Group} />
             <Stack.Screen name="GroupDetail" component={GroupDetail} />
+            <Stack.Screen name="ScheduleMeal" component={ScheduleMeal} />
           </>
         ) : (
           <>

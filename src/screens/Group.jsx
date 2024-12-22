@@ -41,18 +41,19 @@ GroupItem.displayName = "GroupItem";
 
 const Group = ({ navigation }) => {
   const dispatch = useDispatch();
+  const accessToken = useSelector((state) => state.auth.login.currentUser?.accessToken);
   const { groups, isLoading } = useSelector((state) => state.groups);
 
   const [groupName, setGroupName] = useState("");
   console.log(groups);
   useEffect(() => {
-    getGroupsAPI(dispatch);
+    getGroupsAPI(accessToken, dispatch);
   }, [dispatch]);
 
   const handleCreateGroup = async () => {
     if (groupName.trim()) {
       try {
-        await createGroupAPI({ name: groupName }, dispatch);
+        await createGroupAPI(accessToken, { name: groupName }, dispatch);
         setGroupName("");
       } catch (error) {
         console.error("Failed to create group:", error);
@@ -82,7 +83,7 @@ const Group = ({ navigation }) => {
 
         <Text style={styles.sectionHeader}>Your Groups</Text>
         {isLoading ? (
-          <Text>Loading...</Text>
+          <FlatList />
         ) : (
           <FlatList
             data={groups}
