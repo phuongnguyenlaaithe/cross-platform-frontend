@@ -56,7 +56,7 @@ const GroupDetail = ({ route, navigation }) => {
         const profiles = await Promise.all(
           group.users.map(async (user) => {
             const response = await axios.get(
-              `${BASE_URL}/profile/${user.userId}`,
+              `${BASE_URL}/user/profile/${user.userId}`,
               {
                 headers: { Authorization: `Bearer ${accessToken}` },
               }

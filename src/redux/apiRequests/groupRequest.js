@@ -11,7 +11,7 @@ import { BASE_URL } from "../../constants";
 export const getGroupsAPI = async (accessToken, dispatch) => {
   dispatch(fetchGroupsStart());
   try {
-    const res = await axios.get(`${BASE_URL}/group`, {
+    const res = await axios.get(`${BASE_URL}/user/group`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     dispatch(fetchGroupsSuccess(res.data));
@@ -23,7 +23,7 @@ export const getGroupsAPI = async (accessToken, dispatch) => {
 
 export const createGroupAPI = async (accessToken, group, dispatch) => {
   try {
-    const res = await axios.post(`${BASE_URL}/group`, group, {
+    const res = await axios.post(`${BASE_URL}/user/group`, group, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     dispatch(addGroup(res.data));
@@ -35,7 +35,7 @@ export const createGroupAPI = async (accessToken, group, dispatch) => {
 
 export const updateGroupAPI = async (accessToken, dispatch, groupId, group) => {
   try {
-    const res = await axios.patch(`${BASE_URL}/group/${groupId}`, group, {
+    const res = await axios.patch(`${BASE_URL}/user/group/${groupId}`, group, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "multipart/form-data",
@@ -51,7 +51,7 @@ export const updateGroupAPI = async (accessToken, dispatch, groupId, group) => {
 export const addMemberAPI = async (accessToken, groupId, emails, dispatch) => {
   try {
     const res = await axios.patch(
-      `${BASE_URL}/group/${groupId}/add-member`,
+      `${BASE_URL}/user/group/${groupId}/add-member`,
       { emails },
       {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -72,7 +72,7 @@ export const removeMemberAPI = async (
 ) => {
   try {
     const res = await axios.patch(
-      `${BASE_URL}/group/${groupId}/remove-member`,
+      `${BASE_URL}/user/group/${groupId}/remove-member`,
       { userIds },
       {
         headers: { Authorization: `Bearer ${accessToken}` },

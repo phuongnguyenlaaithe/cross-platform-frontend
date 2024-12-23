@@ -18,7 +18,7 @@ export const getAllMealPlanAPI = async (accessToken, dispatch) => {
   }
   dispatch(getMealPlanStart());
   try {
-    const res = await axios.get(`${BASE_URL}/meal-plan`, {
+    const res = await axios.get(`${BASE_URL}/user/meal-plan`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     dispatch(getMealPlanSuccess(res.data));
@@ -30,7 +30,7 @@ export const getAllMealPlanAPI = async (accessToken, dispatch) => {
 export const deleteMealPlanAPI = async (accessToken, dispatch, id) => {
   dispatch(deleteMealPlanStart());
   try {
-    await axios.delete(`${BASE_URL}/meal-plan/${id}`, {
+    await axios.delete(`${BASE_URL}/user/meal-plan/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     dispatch(deleteMealPlanSuccess(id));
@@ -44,7 +44,7 @@ export const addNewMealPlanAPI = async (accessToken, dispatch, data) => {
   dispatch(addMealPlanStart());
 
   try {
-    const res = await axios.post(`${BASE_URL}/meal-plan`, data, {
+    const res = await axios.post(`${BASE_URL}/user/meal-plan`, data, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
