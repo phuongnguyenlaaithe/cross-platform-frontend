@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./Styles";
 import { View, StyleSheet } from "react-native";
 import { AppHeader, CommonButton } from "../components";
+import { useSelector } from "react-redux";
+import { usePushNotifications } from '../hooks/usePushNotifications';
+import axios from 'axios';
+import { BASE_URL } from '../constants';
 
 const Home = ({ navigation }) => {
+  const user = useSelector((state) => state.auth.login.currentUser);
+
+  const { expoPushToken, notification, isNewToken } = usePushNotifications();
+
+  useEffect(() => {
+    const savePushToken = async () => {
+      console.log('expoPushToken:', expoPushToken);
+      console.log('isNewToken:', isNewToken);
+      console.log('accessToken',    user.accessToken);
+      if (expoPushToken && !isNewToken && user.accessToken) {
+        try {
+          const req = await axios.post(`${BASE_URL}/user/notification-token`, { token: expoPushToken }, {
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+            },
+          });
+        } catch (error) {
+          console.error('Error saving push token:', error);
+        }
+      }
+    };
+    savePushToken();
+  }, [expoPushToken]);
   return (
     <View style={styles.root}>
       <AppHeader navigation={navigation} />
@@ -74,8 +101,8 @@ const buttonList = [
     icon: "list",
   },
   {
-    title: "Create Group",
-    navigateTo: "CreateGroup",
+    title: "Group",
+    navigateTo: "Group",
     icon: "group",
   },
 ];

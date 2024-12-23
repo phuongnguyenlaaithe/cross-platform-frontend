@@ -31,6 +31,7 @@ export const authSlice = createSlice({
       // Lưu accessToken và refreshToken vào AsyncStorage
       AsyncStorage.setItem('accessToken', action.payload.accessToken);
       AsyncStorage.setItem('refreshToken', action.payload.refreshToken);
+      AsyncStorage.setItem('userId', action.payload.userId);
     },
     loginFailed: (state) => {
       state.login.isFetching = false;
