@@ -3,9 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   FlatList,
-  StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +13,7 @@ import { getAllCategory } from "../redux/apiRequests/categoryRequest";
 import { getAllMeasurement } from "../redux/apiRequests/measurementRequest";
 import styles from "./Styles";
 import theme from "../theme/index";
-import { AppHeader, AddFoodModal, FoodItem, SelectionModal } from "../components";
+import { AppHeader, AddFoodModal, FoodItem, SelectionModal, RoundButton } from "../components";
 
 const FoodList = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -123,10 +121,8 @@ const FoodList = ({ navigation }) => {
         )}
       </View>
 
-      {/* Add Food Button */}
-      <TouchableOpacity style={roundButtonStyle.button} onPress={() => setModalVisible(true)}>
-        <Text style={roundButtonStyle.text}>+</Text>
-      </TouchableOpacity>
+      {/* Add Fridge Item Button */}
+      <RoundButton onPress={() => setModalVisible(true)} />
 
       {/* Add Food Modal */}
       <AddFoodModal
@@ -168,25 +164,5 @@ const FoodList = ({ navigation }) => {
     </View>
   );
 };
-
-const roundButtonStyle = StyleSheet.create({
-  button: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: theme.colors.primary,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-  },
-  text: {
-    color: theme.colors.white,
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-});
 
 export default FoodList;

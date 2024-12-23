@@ -3,9 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   FlatList,
-  StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +11,7 @@ import { getAllFridgeItems, addNewFridgeItem, deleteFridgeItem } from "../redux/
 import { getAllFoods } from "../redux/apiRequests/foodRequest";
 import styles from "./Styles";
 import theme from "../theme/index";
-import { AppHeader, AddFridgeItemModal, FridgeItem, SelectionModal } from "../components";
+import { AppHeader, AddFridgeItemModal, FridgeItem, SelectionModal, RoundButton } from "../components";
 import { getAllMeasurement } from "../redux/apiRequests/measurementRequest";
 
 const FridgeList = ({ navigation }) => {
@@ -103,7 +101,7 @@ const FridgeList = ({ navigation }) => {
               <FridgeItem
                 item={item}
                 foods={foods}
-                units ={units}
+                units={units}
                 handleDeleteFridgeItem={handleDeleteFridgeItem}
               />
             )}
@@ -112,9 +110,7 @@ const FridgeList = ({ navigation }) => {
       </View>
 
       {/* Add Fridge Item Button */}
-      <TouchableOpacity style={roundButtonStyle.button} onPress={() => setModalVisible(true)}>
-        <Text style={roundButtonStyle.text}>+</Text>
-      </TouchableOpacity>
+      <RoundButton onPress={() => setModalVisible(true)} />
 
       {/* Add Fridge Item Modal */}
       <AddFridgeItemModal
@@ -148,25 +144,5 @@ const FridgeList = ({ navigation }) => {
     </View>
   );
 };
-
-const roundButtonStyle = StyleSheet.create({
-  button: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: theme.colors.primary,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-  },
-  text: {
-    color: theme.colors.white,
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-});
 
 export default FridgeList;

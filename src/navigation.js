@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
 import LoginScreen from "./screens/Login";
 import HomeScreen from "./screens/Home";
-import ShoppingList from "./screens/ShoppingList";
+import UserShoppingList from "./screens/UserShoppingList";
 import RegisterScreen from './screens/Register';
 import FoodList from "./screens/FoodList";
 import FridgeList from "./screens/FridgeList";
@@ -24,7 +24,7 @@ function Navigation() {
         {currentUser ? (
           <>
             <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="ShoppingList" component={ShoppingList} />
+            <Stack.Screen name="UserShoppingList" component={UserShoppingList} />
             <Stack.Screen name="FoodList" component={FoodList} />
             <Stack.Screen name="FridgeList" component={FridgeList} />
           </>

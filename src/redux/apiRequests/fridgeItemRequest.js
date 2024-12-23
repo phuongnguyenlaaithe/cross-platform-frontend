@@ -18,7 +18,7 @@ export const getAllFridgeItems = async (accessToken, dispatch) => {
   }
   dispatch(getFridgeItemStart());
   try {
-    const res = await axios.get(`${BASE_URL}/fridge-item?page=1&limit=10`, {
+    const res = await axios.get(`${BASE_URL}/user/fridge-item?page=1&limit=10`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     dispatch(getFridgeItemSuccess(res.data));
@@ -31,7 +31,7 @@ export const getAllFridgeItems = async (accessToken, dispatch) => {
 export const deleteFridgeItem = async (accessToken, dispatch, id) => {
   dispatch(deleteFridgeItemStart());
   try {
-    await axios.delete(`${BASE_URL}/fridge-item/${id}`, {
+    await axios.delete(`${BASE_URL}/user/fridge-item/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     dispatch(deleteFridgeItemSuccess(id));
@@ -45,7 +45,7 @@ export const deleteFridgeItem = async (accessToken, dispatch, id) => {
 export const addNewFridgeItem = async (accessToken, dispatch, data) => {
   dispatch(addFridgeItemStart());
   try {
-    await axios.post(`${BASE_URL}/fridge-item`, data, {
+    await axios.post(`${BASE_URL}/user/fridge-item`, data, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

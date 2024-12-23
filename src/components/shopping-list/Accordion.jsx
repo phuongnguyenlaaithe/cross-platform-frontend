@@ -3,9 +3,9 @@ import theme from "../../theme";
 import styles from "../../screens/Styles";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
-const Accordion = ({ title, children }) => {
+const Accordion = ({ title, children, handleDelete }) => {
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpand = () => {
@@ -19,7 +19,7 @@ const Accordion = ({ title, children }) => {
           style={[styles.headerItem, { marginBottom: theme.spacing.small }]}
         >
           <Text style={styles.title2}>{title}</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleDelete}>
             <Icon name="delete" size={24} color={theme.colors.textSecondary} />
           </TouchableOpacity>
         </View>

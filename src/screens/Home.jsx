@@ -45,7 +45,7 @@ const thisStyles = StyleSheet.create({
 const buttonList = [
   {
     title: "Create Shopping List",
-    navigateTo: "ShoppingList",
+    navigateTo: "UserShoppingList",
     icon: "add-shopping-cart",
   },
   {
