@@ -45,7 +45,6 @@ const Group = ({ navigation }) => {
   const { groups, isLoading } = useSelector((state) => state.groups);
 
   const [groupName, setGroupName] = useState("");
-  console.log(groups);
   useEffect(() => {
     getGroupsAPI(accessToken, dispatch);
   }, [dispatch]);
@@ -73,7 +72,6 @@ const Group = ({ navigation }) => {
     [navigation]
   );
 
-  console.log('groups', groups)
   return (
     <>
       {/* AppHeader nằm ngoài View root để không bị ảnh hưởng padding */}

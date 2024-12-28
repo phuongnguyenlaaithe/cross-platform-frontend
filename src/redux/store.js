@@ -8,6 +8,7 @@ import groupsSlice from './slices/groupsSlice'
 import mealPlanSlice from './slices/mealPlanSlice'
 import userShoppingListSlice from './slices/userShoppingListSlice'
 import userTaskSlice from './slices/userTaskSlice'
+import recipeSlice from './slices/recipeSlice'
 
 
 export const store = configureStore({
@@ -21,5 +22,6 @@ export const store = configureStore({
     mealPlan: mealPlanSlice,
     userShoppingList: userShoppingListSlice,
     userTask: userTaskSlice,
+    recipe: recipeSlice
   },
 })

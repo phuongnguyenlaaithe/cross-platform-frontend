@@ -14,9 +14,6 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     const savePushToken = async () => {
-      console.log('expoPushToken:', expoPushToken);
-      console.log('isNewToken:', isNewToken);
-      console.log('accessToken',    user.accessToken);
       if (expoPushToken && !isNewToken && user.accessToken) {
         try {
           const req = await axios.post(`${BASE_URL}/user/notification-token`, { token: expoPushToken }, {
@@ -87,7 +84,7 @@ const buttonList = [
   },
   {
     title: "Favourite Recipe",
-    navigateTo: "FavouriteRecipe",
+    navigateTo: "Recipe",
     icon: "favorite",
   },
   {
