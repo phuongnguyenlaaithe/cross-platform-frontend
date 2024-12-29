@@ -37,19 +37,6 @@ const AddCategoryModal = ({
               setNewCategory({ ...newCategory, name: text })
             }
           />
-
-          <TouchableOpacity
-            style={[styles.button, styles.buttonClose]}
-            onPress={handleAddCategory}
-          >
-            <Text style={styles.textStyle}>Add Category</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => setModalVisible(false)}
-          >
-            <Text style={styles.textStyle}>Cancel</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>

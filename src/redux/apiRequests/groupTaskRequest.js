@@ -91,7 +91,6 @@ export const markGroupTaskAsDoneOrNot = async (accessToken, dispatch, taskId, gr
 
 // Xóa nhiệm vụ
 export const deleteGroupTask = async (accessToken, dispatch, taskId, groupId, shoppingListId) => {
-    console.log(taskId, groupId, shoppingListId);
     dispatch(deleteGroupTaskStart());
     try {
         await axios.delete(`${BASE_URL}/group/task/${taskId}`, {
@@ -110,7 +109,6 @@ export const deleteGroupTask = async (accessToken, dispatch, taskId, groupId, sh
 
 // Gán nhiệm vụ
 export const assignTask = async (accessToken, dispatch, taskId, groupId, shoppingListId, assigneeId) => {
-    console.log(taskId, groupId, shoppingListId, assigneeId);
     dispatch(assignTaskStart());
     try {
         const res = await axios.patch(`${BASE_URL}/group/task/${taskId}/assign-task`, { groupId, shoppingListId, assigneeId}, {

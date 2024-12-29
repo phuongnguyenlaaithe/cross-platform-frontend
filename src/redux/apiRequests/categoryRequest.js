@@ -14,7 +14,6 @@ import { BASE_URL } from '../../constants';
 
 export const getAllCategory = async (accessToken, dispatch) => {
     if (!accessToken) {
-      // Handle the case when 'token' is missing or null
       return;
     }
     dispatch(getCategoryStart());

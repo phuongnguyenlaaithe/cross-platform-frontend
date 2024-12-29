@@ -13,11 +13,16 @@ import GroupDetail from "./screens/GroupDetail";
 import ScheduleMeal from "./screens/ScheduleMeal";
 import Profile from "./screens/Profile";
 import GroupShoppingList from "./screens/GroupShoppingList";
+import AdminHome from "./screens/AdminHome";
+import CategoryList from "./screens/CategoryList";
+import MeasurementList from "./screens/MeasurementList";
+import UserList from "./screens/UserList"; 
 
 const Stack = createNativeStackNavigator();
 
 function Navigation() {
   const currentUser = useSelector((state) => state.auth.login.currentUser);
+  const currentAdmin = useSelector((state) => state.adminAuth.adminLogin.currentAdmin);
 
   return (
     <NavigationContainer>
@@ -26,7 +31,14 @@ function Navigation() {
           headerShown: false,
         }}
       >
-        {currentUser ? (
+        {currentAdmin ? (
+          <>
+            <Stack.Screen name="AdminHome" component={AdminHome} />
+            <Stack.Screen name="CategoryList" component={CategoryList} />
+            <Stack.Screen name="MeasurementList" component={MeasurementList} />
+            <Stack.Screen name="UserList" component={UserList} />
+          </>
+        ) : currentUser ? (
           <>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="UserShoppingList" component={UserShoppingList} />

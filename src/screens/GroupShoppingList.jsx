@@ -46,7 +46,6 @@ const GroupShoppingList = ({ navigation, route }) => {
   const members = useSelector((state) => state.groups.groups.find((group) => group.id === groupId).users);
   const memberProfiles = members.map(member => ({ ...member.user.Profile, id: member.userId }));
 
-  console.log(shoppingLists)
 
   useEffect(() => {
     if (accessToken) {
