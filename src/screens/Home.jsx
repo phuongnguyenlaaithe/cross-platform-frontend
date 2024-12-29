@@ -89,7 +89,7 @@ const buttonList = [
   },
   {
     title: "Generate Reports",
-    navigateTo: "GenerateReports",
+    navigateTo: "Report",
     icon: "assessment",
   },
   {

@@ -12,6 +12,7 @@ import Group from "./screens/Group";
 import GroupDetail from "./screens/GroupDetail";
 import ScheduleMeal from "./screens/ScheduleMeal";
 import Recipe from "./screens/Recipe"
+import Report from "./screens/Report"
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,7 @@ function Navigation() {
             <Stack.Screen name="GroupDetail" component={GroupDetail} />
             <Stack.Screen name="ScheduleMeal" component={ScheduleMeal} />
             <Stack.Screen name="Recipe" component={Recipe} />
+            <Stack.Screen name="Report" component={Report} />
           </>
         ) : (
           <>
