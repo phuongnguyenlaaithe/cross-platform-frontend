@@ -31,7 +31,7 @@ export const authSlice = createSlice({
       // Lưu accessToken và refreshToken vào AsyncStorage
       AsyncStorage.setItem('accessToken', action.payload.accessToken);
       AsyncStorage.setItem('refreshToken', action.payload.refreshToken);
-      AsyncStorage.setItem('userId', action.payload.userId);
+      AsyncStorage.setItem('userId', action.payload.userId.toString());
     },
     loginFailed: (state) => {
       state.login.isFetching = false;
@@ -48,6 +48,7 @@ export const authSlice = createSlice({
       // Xóa accessToken và refreshToken khỏi AsyncStorage
       AsyncStorage.removeItem('accessToken');
       AsyncStorage.removeItem('refreshToken');
+      AsyncStorage.removeItem('userId');
     },
     logoutFailed: state => {
       state.login.isFetching = false;

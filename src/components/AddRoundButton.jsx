@@ -13,7 +13,7 @@ const RoundButton = ({ onPress }) => {
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 80,
     right: 20,
     backgroundColor: theme.colors.primary,
     width: 60,

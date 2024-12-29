@@ -8,7 +8,7 @@ import {
   Modal,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { AppHeader } from "../components";
+import { AppHeader, BottomTabView } from "../components";
 import WeeklyCalendar from "../components/schedule-meal/WeeklyCalendar";
 import moment from "moment";
 import theme from "../theme";
@@ -78,6 +78,7 @@ const ScheduleMeal = ({ navigation }) => {
           onClose={() => setModalVisible(false)}
         />
       </Modal>
+      <BottomTabView />
     </View>
   );
 };

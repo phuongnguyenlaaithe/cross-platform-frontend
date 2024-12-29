@@ -12,10 +12,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUserShoppingLists, deleteUserShoppingList, addNewUserShoppingList } from "../redux/apiRequests/userShoppingListRequest";
 import { getAllFoods } from "../redux/apiRequests/foodRequest";
-import { addUserTask, markUserTaskAsDoneOrNot } from '../redux/apiRequests/userTaskRequest';
+import { addUserTask, markUserTaskAsDoneOrNot, deleteUserTask } from '../redux/apiRequests/userTaskRequest';
 import styles from "./Styles";
 import theme from "../theme/index";
-import { AppHeader, AddShoppingListModal, RoundButton, Accordion, AddTaskModal, SelectionModal } from "../components";
+import { AppHeader, AddShoppingListModal, RoundButton, Accordion, AddTaskModal, SelectionModal, BottomTabView } from "../components";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 const UserShoppingList = ({ navigation }) => {
@@ -118,12 +118,15 @@ const UserShoppingList = ({ navigation }) => {
               {groupedTasks[category].map((task, taskIndex) => (
                 <View key={taskIndex} style={thisStyles.itemContainer}>
                   <TouchableOpacity onPress={() => markUserTaskAsDoneOrNot(accessToken, dispatch, task.id, item.id, !task.done)}>
-                    <Icon name={task.done ? "check-box" : "check-box-outline-blank"} size={30} color={theme.colors.primary} />
+                    <Icon name={task.done ? "check-box" : "check-box-outline-blank"} size={20} color={theme.colors.primary} />
                   </TouchableOpacity>
                   <Text style={[thisStyles.itemName, task.done && thisStyles.itemDone]}>{task.food.name}</Text>
                   <Text style={thisStyles.itemQuantity}>{task.quantity} </Text>
                   <Text style={thisStyles.itemUnit}>{task.food.unit.name}</Text>
-                  <Text style={thisStyles.itemDeadline}> (deadline: {new Date(task.deadline).toLocaleDateString()})</Text>
+                  <Text style={thisStyles.itemDeadline}>(deadline: {new Date(task.deadline).toLocaleDateString()})</Text>
+                  <TouchableOpacity style={{marginLeft: theme.spacing.small}} onPress={() => deleteUserTask(accessToken, dispatch, task.id)}>
+                    <Icon name="delete" size={20} color={theme.colors.primary} />
+                  </TouchableOpacity>
                 </View>
               ))}
             </View>
@@ -211,6 +214,7 @@ const UserShoppingList = ({ navigation }) => {
         }}
         title="Select Food"
       />
+      <BottomTabView />
     </View>
   );
 };

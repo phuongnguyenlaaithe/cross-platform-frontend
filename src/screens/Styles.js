@@ -30,6 +30,11 @@ const styles = StyleSheet.create({
     gap: theme.spacing.medium,
   },
   // Title styles
+  title1: {
+    color: theme.colors.textPrimary,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
   title2: {
     color: theme.colors.textPrimary,
     fontSize: 18,

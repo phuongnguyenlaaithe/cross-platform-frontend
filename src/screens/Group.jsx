@@ -11,7 +11,8 @@ import { Image } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { createGroupAPI, getGroupsAPI } from "../redux/apiRequests/groupRequest";
 import theme from "../theme/index";
-import AppHeader from "../components/AppHeader";
+import { AppHeader, BottomTabView } from "../components";
+
 
 // Group Item Component
 const GroupItem = React.memo(({ group, onPress }) => (
@@ -45,7 +46,6 @@ const Group = ({ navigation }) => {
   const { groups, isLoading } = useSelector((state) => state.groups);
 
   const [groupName, setGroupName] = useState("");
-  console.log(groups);
   useEffect(() => {
     getGroupsAPI(accessToken, dispatch);
   }, [dispatch]);
@@ -73,7 +73,6 @@ const Group = ({ navigation }) => {
     [navigation]
   );
 
-  console.log('groups', groups)
   return (
     <>
       {/* AppHeader nằm ngoài View root để không bị ảnh hưởng padding */}
@@ -113,6 +112,7 @@ const Group = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+      <BottomTabView />
     </>
   );
 };

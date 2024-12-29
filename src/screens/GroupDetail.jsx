@@ -18,7 +18,7 @@ import {
 } from "../redux/apiRequests/groupRequest";
 import { leaveGroup } from "../redux/slices/groupsSlice";
 import * as ImagePicker from "expo-image-picker";
-import { AppHeader } from "../components";
+import { AppHeader, BottomTabView } from "../components";
 import theme from "../theme/index";
 import axios from "axios";
 import { BASE_URL } from "../constants";
@@ -123,30 +123,32 @@ const GroupDetail = ({ route, navigation }) => {
   };
 
   const renderMember = ({ item }) => (
-    <View style={groupDetailStyle.memberItem}>
-      <View style={groupDetailStyle.memberInfo}>
-        <Image
-          alt="member-avatar"
-          source={
-            item.photoURL
-              ? { uri: item.photoURL }
-              : require("../../assets/adaptive-icon.png")
-          }
-          style={groupDetailStyle.memberAvatar}
-        />
-        <Text style={groupDetailStyle.memberName}>
-          {item.name} {item.userId === user.userId ? " (You)" : ""}
-        </Text>
+    <TouchableOpacity onPress={() => navigation.navigate('UserShoppingList', { groupId })}>
+      <View style={groupDetailStyle.memberItem}>
+        <View style={groupDetailStyle.memberInfo}>
+          <Image
+            alt="member-avatar"
+            source={
+              item.photoURL
+                ? { uri: item.photoURL }
+                : require("../../assets/adaptive-icon.png")
+            }
+            style={groupDetailStyle.memberAvatar}
+          />
+          <Text style={groupDetailStyle.memberName}>
+            {item.name} {item.userId === user.userId ? " (You)" : ""}
+          </Text>
+        </View>
+        {isGroupAdmin && (
+          <TouchableOpacity
+          style={styles.deleteIconContainer}
+          onPress={() => handleRemoveMember(item.userId)}
+        >
+          <Icon name="delete" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
+        )}
       </View>
-      {isGroupAdmin && (
-        <TouchableOpacity
-        style={styles.deleteIconContainer}
-        onPress={() => handleRemoveMember(item.userId)}
-      >
-        <Icon name="delete" size={24} color={theme.colors.textSecondary} />
-      </TouchableOpacity>
-      )}
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -222,7 +224,15 @@ const GroupDetail = ({ route, navigation }) => {
             <Text style={groupDetailStyle.buttonText}>Leave Group</Text>
           </TouchableOpacity>
         )}
+
+        <TouchableOpacity
+          style={groupDetailStyle.button}
+          onPress={() => navigation.navigate('GroupShoppingList', { groupId, groupName })}
+        >
+          <Text style={groupDetailStyle.buttonText}>View Shopping List</Text>
+        </TouchableOpacity>
       </View>
+      <BottomTabView />
     </View>
   );
 };

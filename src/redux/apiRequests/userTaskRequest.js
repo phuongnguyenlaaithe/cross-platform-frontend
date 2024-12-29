@@ -95,6 +95,7 @@ export const deleteUserTask = async (accessToken, dispatch, taskId) => {
             },
         });
         dispatch(deleteUserTaskSuccess());
+        getAllUserShoppingLists(accessToken, dispatch);
     } catch (err) {
         dispatch(deleteUserTaskFailed());
         alert("Lỗi khi xóa: " + err.response?.data?.response.message);

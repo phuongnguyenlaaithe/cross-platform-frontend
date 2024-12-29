@@ -9,6 +9,7 @@ import FridgeItem from "./fridge-list/FridgeItem";
 import RoundButton from "./AddRoundButton";
 import AddShoppingListModal from "./shopping-list/AddShoppingListModal";
 import AddTaskModal from "./shopping-list/AddTaskModal";
+import BottomTabView from "./BottomTabView";
 
 export {
     AppHeader,
@@ -22,4 +23,5 @@ export {
     RoundButton,
     AddShoppingListModal,
     AddTaskModal,
+    BottomTabView,
 };

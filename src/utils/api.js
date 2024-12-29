@@ -24,8 +24,6 @@ api.interceptors.request.use(
   (config) => {
     const state = axiosReduxStore.getState(); 
     const token = state.auth.login.currentUser?.accessToken;
-    console.log("token", token);
-
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

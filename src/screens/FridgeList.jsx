@@ -11,7 +11,7 @@ import { getAllFridgeItems, addNewFridgeItem, deleteFridgeItem } from "../redux/
 import { getAllFoods } from "../redux/apiRequests/foodRequest";
 import styles from "./Styles";
 import theme from "../theme/index";
-import { AppHeader, AddFridgeItemModal, FridgeItem, SelectionModal, RoundButton } from "../components";
+import { AppHeader, AddFridgeItemModal, FridgeItem, SelectionModal, RoundButton, BottomTabView } from "../components";
 import { getAllMeasurement } from "../redux/apiRequests/measurementRequest";
 
 const FridgeList = ({ navigation }) => {
@@ -141,6 +141,7 @@ const FridgeList = ({ navigation }) => {
         }}
         title="Select Food"
       />
+      <BottomTabView />
     </View>
   );
 };

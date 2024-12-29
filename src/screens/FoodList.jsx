@@ -13,7 +13,7 @@ import { getAllCategory } from "../redux/apiRequests/categoryRequest";
 import { getAllMeasurement } from "../redux/apiRequests/measurementRequest";
 import styles from "./Styles";
 import theme from "../theme/index";
-import { AppHeader, AddFoodModal, FoodItem, SelectionModal, RoundButton } from "../components";
+import { AppHeader, AddFoodModal, FoodItem, SelectionModal, RoundButton, BottomTabView } from "../components";
 
 const FoodList = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -161,6 +161,8 @@ const FoodList = ({ navigation }) => {
         }}
         title="Select Measurement"
       />
+      
+      <BottomTabView />
     </View>
   );
 };
