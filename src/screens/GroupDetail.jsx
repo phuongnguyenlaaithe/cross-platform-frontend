@@ -35,11 +35,12 @@ const GroupDetail = ({ route, navigation }) => {
     state.groups.groups.find((g) => g.id === groupId)
   );
 
+  const groupAdminId = group.users.find((u) => u.role === "ADMIN").userId;
   const user = useSelector((state) => state.auth.login.currentUser);
 
   const isGroupAdmin = true || group.users.some(
     (u) => u.userId === user.userId && u.role === "ADMIN"
-  );
+  ); 
 
   const [userProfiles, setUserProfiles] = useState([]);
   const [email, setEmail] = useState("");
@@ -125,33 +126,33 @@ const GroupDetail = ({ route, navigation }) => {
   };
 
   const renderMember = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('UserShoppingList', { groupId })}>
-      <View style={groupDetailStyle.memberItem}>
-        <View style={groupDetailStyle.memberInfo}>
-          <Image
-            alt="member-avatar"
-            source={
-              item.photoURL
-                ? { uri: item.photoURL }
-                : require("../../assets/adaptive-icon.png")
-            }
-            style={groupDetailStyle.memberAvatar}
-          />
-          <Text style={groupDetailStyle.memberName}>
-            {item.name} {item.userId === user.userId ? " (You)" : ""}
-          </Text>
-        </View>
-        {isGroupAdmin && (
-          <TouchableOpacity
+  <TouchableOpacity>
+    <View style={groupDetailStyle.memberItem}>
+      <View style={groupDetailStyle.memberInfo}>
+        <Image
+          alt="member-avatar"
+          source={
+            item.photoURL
+              ? { uri: item.photoURL }
+              : require("../../assets/adaptive-icon.png")
+          }
+          style={groupDetailStyle.memberAvatar}
+        />
+        <Text style={groupDetailStyle.memberName}>
+          {item.name}{item.userId == user.userId ? " (You)" : ""} {item.userId == groupAdminId ? " (Admin)" : ""}
+        </Text>
+      </View>
+      {isGroupAdmin && (
+        <TouchableOpacity
           style={styles.deleteIconContainer}
           onPress={() => handleRemoveMember(item.userId)}
         >
           <Icon name="delete" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+      )}
+    </View>
+  </TouchableOpacity>
+);
 
   return (
     <View style={styles.root}>
