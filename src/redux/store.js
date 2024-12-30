@@ -13,7 +13,8 @@ import groupShoppingListSlice from './slices/groupShoppingListSlice'
 import groupTaskSlice from './slices/groupTaskSlice'
 import adminAuthSlice from './slices/adminAuthSlide'
 import userListSlice from './slices/userListSlice'
-import { use } from 'react'
+import recipeSlice from './slices/recipeSlice'
+
 
 export const store = configureStore({
   reducer: {
@@ -31,5 +32,6 @@ export const store = configureStore({
     groupTask: groupTaskSlice,
     adminAuth: adminAuthSlice,
     userList: userListSlice,
+    recipe: recipeSlice
   },
 })

@@ -17,6 +17,8 @@ import AdminHome from "./screens/AdminHome";
 import CategoryList from "./screens/CategoryList";
 import MeasurementList from "./screens/MeasurementList";
 import UserList from "./screens/UserList"; 
+import Recipe from "./screens/Recipe"
+import Report from "./screens/Report"
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +51,8 @@ function Navigation() {
             <Stack.Screen name="ScheduleMeal" component={ScheduleMeal} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="GroupShoppingList" component={GroupShoppingList} />
+            <Stack.Screen name="Recipe" component={Recipe} />
+            <Stack.Screen name="Report" component={Report} />
           </>
         ) : (
           <>

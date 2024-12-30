@@ -85,12 +85,12 @@ const buttonList = [
   },
   {
     title: "Favourite Recipe",
-    navigateTo: "FavouriteRecipe",
+    navigateTo: "Recipe",
     icon: "favorite",
   },
   {
     title: "Generate Reports",
-    navigateTo: "GenerateReports",
+    navigateTo: "Report",
     icon: "assessment",
   },
   {

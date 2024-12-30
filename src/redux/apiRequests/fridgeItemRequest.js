@@ -18,7 +18,7 @@ export const getAllFridgeItems = async (accessToken, dispatch) => {
   }
   dispatch(getFridgeItemStart());
   try {
-    const res = await axios.get(`${BASE_URL}/user/fridge-item?page=1&limit=10`, {
+    const res = await axios.get(`${BASE_URL}/user/fridge-item`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     dispatch(getFridgeItemSuccess(res.data));

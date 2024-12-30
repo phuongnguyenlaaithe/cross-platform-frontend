@@ -18,8 +18,6 @@ const api = axios.create({
 
 api.defaults.baseURL = 'https://266d-118-70-133-29.ngrok-free.app'
 
-
-// Interceptor để thêm token vào header
 api.interceptors.request.use(
   (config) => {
     const state = axiosReduxStore.getState(); 
