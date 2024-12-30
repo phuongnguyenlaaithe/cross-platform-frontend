@@ -45,5 +45,6 @@ export const {
   addGroup,
   updateGroup,
   deleteGroup,
+  leaveGroup,
 } = groupsSlice.actions;
 export default groupsSlice.reducer;

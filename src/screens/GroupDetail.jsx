@@ -38,9 +38,9 @@ const GroupDetail = ({ route, navigation }) => {
   const groupAdminId = group.users.find((u) => u.role === "ADMIN").userId;
   const user = useSelector((state) => state.auth.login.currentUser);
 
-  const isGroupAdmin = true || group.users.some(
-    (u) => u.userId === user.userId && u.role === "ADMIN"
-  ); 
+  const isGroupAdmin = group.users.some(
+    (u) => u.userId == user.userId && u.role === "ADMIN"
+  );
 
   const [userProfiles, setUserProfiles] = useState([]);
   const [email, setEmail] = useState("");

@@ -61,7 +61,7 @@ export const addMemberAPI = async (accessToken, groupId, emails, dispatch) => {
     dispatch(updateGroup(res.data));
   } catch (error) {
     console.error("Lỗi khi thêm thành viên:", error);
-    alert("Lỗi khi thêm thành viên");
+    alert("Chỉ admin nhóm mới được thêm thành viên");
   }
 };
 

@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: theme.spacing.medium,
-    backgroundColor: theme.colors.bgLight,
+    backgroundColor: theme.colors.primary,
     ...theme.shadows.card,
     position: "relative",
   },

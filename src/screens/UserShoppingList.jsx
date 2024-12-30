@@ -110,7 +110,7 @@ const UserShoppingList = ({ navigation }) => {
   
     return (
       <View style={[styles.card, { marginBottom: theme.spacing.medium }]}>
-        <Accordion title={`${item.name}`} handleDelete={() => handleDeleteShoppingList(item.id)}>
+        <Accordion title={`${item.name}`} handleDelete={() => handleDeleteShoppingList(item.id)} isGroupAdmin={false} isShoppingListOfGroup={false}>
           <Text style={{ color: theme.colors.textSecondary, marginBottom: 8, fontSize: 17 }}>Note: {item.note}</Text>
           {Object.keys(groupedTasks).map((category, categoryIndex) => (
             <View key={categoryIndex} style={thisStyles.categoryContainer}>

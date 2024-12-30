@@ -46,6 +46,14 @@ const GroupShoppingList = ({ navigation, route }) => {
   const members = useSelector((state) => state.groups.groups.find((group) => group.id === groupId).users);
   const memberProfiles = members.map(member => ({ ...member.user.Profile, id: member.userId }));
 
+  const group = useSelector((state) =>
+    state.groups.groups.find((g) => g.id === groupId)
+  );
+  const user = useSelector((state) => state.auth.login.currentUser);
+
+  const isGroupAdmin = group.users.some(
+    (u) => u.userId == user.userId && u.role === "ADMIN"
+  );
 
   useEffect(() => {
     if (accessToken) {
@@ -130,6 +138,8 @@ const GroupShoppingList = ({ navigation, route }) => {
         <Accordion
           title={`${item.name}`}
           handleDelete={() => handleDeleteShoppingList(item.id, groupId)}
+          isGroupAdmin={isGroupAdmin}
+          isShoppingListOfGroup={true}
         >
           <Text style={{ color: theme.colors.textSecondary, marginBottom: 8, fontSize: 17 }}>
             Note: {item.note}
@@ -140,26 +150,29 @@ const GroupShoppingList = ({ navigation, route }) => {
               {/* Add column headers */}
               <View style={thisStyles.headerRow}>
                 <Text style={thisStyles.itemName}>Item</Text>
-                <Text style={[thisStyles.itemQuantity, {marginLeft: 10}]}>Quantity</Text>
+                <Text style={[thisStyles.itemQuantity, { marginLeft: 10 }]}>Quantity</Text>
                 <Text style={[thisStyles.itemDeadline]}>Deadline</Text>
-                <Text style={[thisStyles.itemAssignee, {marginRight: 40}]}>Assignee</Text>
+                <Text style={[thisStyles.itemAssignee, { marginRight: 40 }]}>Assignee</Text>
               </View>
               {groupedTasks[category].map((task, taskIndex) => {
                 const assignee = memberProfiles.find(profile => profile.id === task.assigneeId);
                 return (
                   <View key={taskIndex} style={thisStyles.itemContainer}>
-                    <TouchableOpacity
-                      onPress={() =>
-                        markGroupTaskAsDoneOrNot(accessToken, dispatch, task.id, groupId, item.id, !task.done)
-                      }
-                      style={thisStyles.checkbox}
-                    >
-                      <Icon
-                        name={task.done ? "check-box" : "check-box-outline-blank"}
-                        size={20}
-                        color={theme.colors.primary}
-                      />
-                    </TouchableOpacity>
+                    {isGroupAdmin && (
+                      <TouchableOpacity
+                        onPress={() =>
+                          markGroupTaskAsDoneOrNot(accessToken, dispatch, task.id, groupId, item.id, !task.done)
+                        }
+                        style={thisStyles.checkbox}
+                      >
+                        <Icon
+                          name={task.done ? "check-box" : "check-box-outline-blank"}
+                          size={20}
+                          color={theme.colors.primary}
+                        />
+                      </TouchableOpacity>
+                    )}
+
                     <Text style={[thisStyles.itemName, task.done && thisStyles.itemDone]}>
                       {task.food.name}
                     </Text>
@@ -171,21 +184,26 @@ const GroupShoppingList = ({ navigation, route }) => {
                       {assignee ? assignee.name : "Unassigned"}
                     </Text>
                     <View style={thisStyles.actionButtons}>
-                      <TouchableOpacity
-                        onPress={() => deleteGroupTask(accessToken, dispatch, task.id, groupId, item.id)}
-                      >
-                        <Icon name="delete" size={20} color={theme.colors.primary} />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => {
-                          setSelectedTaskId(task.id);
-                          setSelectedShoppingListId(item.id);
-                          setShowAssignModal(true);
-                        }}
-                        style={{ marginLeft: theme.spacing.small }}
-                      >
-                        <Icon name="person-add" size={20} color={theme.colors.primary} />
-                      </TouchableOpacity>
+                      {isGroupAdmin && (
+                        <TouchableOpacity
+                          onPress={() => deleteGroupTask(accessToken, dispatch, task.id, groupId, item.id)}
+                        >
+                          <Icon name="delete" size={20} color={theme.colors.primary} />
+                        </TouchableOpacity>
+                      )}
+                      {isGroupAdmin && (
+                        <TouchableOpacity
+                          onPress={() => {
+                            setSelectedTaskId(task.id);
+                            setSelectedShoppingListId(item.id);
+                            setShowAssignModal(true);
+                          }}
+                          style={{ marginLeft: theme.spacing.small }}
+                        >
+                          <Icon name="person-add" size={20} color={theme.colors.primary} />
+                        </TouchableOpacity>
+                      )}
+
                     </View>
                   </View>
                 );
@@ -213,7 +231,7 @@ const GroupShoppingList = ({ navigation, route }) => {
     <View style={styles.root}>
       <AppHeader navigation={navigation} showBackButton={true} />
       <View style={styles.container}>
-        <Text style={[styles.title1, { marginBottom: theme.spacing.medium, textAlign: 'center'}]}>Group: {route.params.groupName}</Text>
+        <Text style={[styles.title1, { marginBottom: theme.spacing.medium, textAlign: 'center' }]}>Group: {route.params.groupName}</Text>
 
         <Text style={[styles.title2, { marginBottom: theme.spacing.medium }]}>Shopping List</Text>
 
