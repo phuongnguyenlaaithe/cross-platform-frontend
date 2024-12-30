@@ -213,7 +213,7 @@ const GroupShoppingList = ({ navigation, route }) => {
     <View style={styles.root}>
       <AppHeader navigation={navigation} showBackButton={true} />
       <View style={styles.container}>
-        <Text style={[styles.title1, { marginBottom: theme.spacing.medium, textAlign: 'center', height: 40, backgroundColor: theme.colors.primary, padding: 5 }]}>Group: {route.params.groupName}</Text>
+        <Text style={[styles.title1, { marginBottom: theme.spacing.medium, textAlign: 'center'}]}>Group: {route.params.groupName}</Text>
 
         <Text style={[styles.title2, { marginBottom: theme.spacing.medium }]}>Shopping List</Text>
 

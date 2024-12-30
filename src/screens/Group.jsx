@@ -6,23 +6,25 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
+  Alert,
 } from "react-native";
 import { Image } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { createGroupAPI, getGroupsAPI } from "../redux/apiRequests/groupRequest";
+import { createGroupAPI, getGroupsAPI, deleteGroupAPI } from "../redux/apiRequests/groupRequest";
 import theme from "../theme/index";
-import { AppHeader, BottomTabView } from "../components";
-
+import { AppHeader, BottomTabView, AddGroupModal, RoundButton } from "../components";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import { Ionicons } from "@expo/vector-icons";
 
 // Group Item Component
-const GroupItem = React.memo(({ group, onPress }) => (
-  <TouchableOpacity
-    style={styles.groupItem}
-    onPress={onPress}
-    accessible={true}
-    accessibilityLabel={`Group ${group.name}, ${group.users?.length || 1} members`}
-  >
-    <View style={styles.groupInfo}>
+const GroupItem = React.memo(({ group, onPress, onDelete }) => (
+  <View style={styles.groupItem}>
+    <TouchableOpacity
+      style={styles.groupInfo}
+      onPress={onPress}
+      accessible={true}
+      accessibilityLabel={`Group ${group.name}, ${group.users?.length || 1} members`}
+    >
       <Image
         alt="group-avatar"
         source={
@@ -33,9 +35,17 @@ const GroupItem = React.memo(({ group, onPress }) => (
         style={styles.groupAvatar}
       />
       <Text style={styles.groupName}>{group.name}</Text>
-    </View>
+    </TouchableOpacity>
     <Text style={styles.groupMembers}>{group.users?.length || 1} Members</Text>
-  </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.deleteButton}
+      onPress={onDelete}
+      accessible={true}
+      accessibilityLabel={`Delete group ${group.name}`}
+    >
+      <Icon name="delete" size={20}/>
+    </TouchableOpacity>
+  </View>
 ));
 
 GroupItem.displayName = "GroupItem";
@@ -45,16 +55,20 @@ const Group = ({ navigation }) => {
   const accessToken = useSelector((state) => state.auth.login.currentUser?.accessToken);
   const { groups, isLoading } = useSelector((state) => state.groups);
 
-  const [groupName, setGroupName] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newGroup, setNewGroup] = useState({ name: "" });
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     getGroupsAPI(accessToken, dispatch);
   }, [dispatch]);
 
   const handleCreateGroup = async () => {
-    if (groupName.trim()) {
+    if (newGroup.name.trim()) {
       try {
-        await createGroupAPI(accessToken, { name: groupName }, dispatch);
-        setGroupName("");
+        await createGroupAPI(accessToken, { name: newGroup.name }, dispatch);
+        setNewGroup({ name: "" });
+        setModalVisible(false);
       } catch (error) {
         console.error("Failed to create group:", error);
       }
@@ -63,11 +77,41 @@ const Group = ({ navigation }) => {
     }
   };
 
+  const handleDeleteGroup = async (groupId) => {
+    Alert.alert(
+      "Delete Group",
+      "Are you sure you want to delete this group?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteGroupAPI(accessToken, groupId, dispatch);
+            } catch (error) {
+              console.error("Failed to delete group:", error);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const filteredGroups = groups.filter((group) =>
+    group.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const renderGroup = useCallback(
     ({ item }) => (
       <GroupItem
         group={item}
         onPress={() => navigation.navigate("GroupDetail", { groupId: item.id })}
+        onDelete={() => handleDeleteGroup(item.id)}
       />
     ),
     [navigation]
@@ -75,17 +119,27 @@ const Group = ({ navigation }) => {
 
   return (
     <>
-      {/* AppHeader nằm ngoài View root để không bị ảnh hưởng padding */}
       <AppHeader navigation={navigation} showBackButton={true} />
       <View style={styles.root}>
         <Text style={styles.title}>Family Groups</Text>
+
+        {/* Search Bar */}
+        <View style={[styles.headerItem, { marginBottom: theme.spacing.large, flexDirection: 'row', alignItems: 'center' }]}>
+          <TextInput
+            style={[styles.input, { flex: 1, paddingLeft: 40 }]}
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          <Ionicons name="search" size={20} color={theme.colors.textSecondary} style={{ position: 'absolute', left: 10 }} />
+        </View>
 
         <Text style={styles.sectionHeader}>Your Groups</Text>
         {isLoading ? (
           <FlatList />
         ) : (
           <FlatList
-            data={groups}
+            data={filteredGroups}
             renderItem={renderGroup}
             keyExtractor={(item) => item?.id?.toString()}
             style={styles.groupList}
@@ -93,25 +147,15 @@ const Group = ({ navigation }) => {
           />
         )}
 
-        <View style={styles.form}>
-          <Text style={styles.sectionHeader}>Create New Group</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter group name"
-            placeholderTextColor={theme.colors.textSecondary}
-            value={groupName}
-            onChangeText={setGroupName}
-          />
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleCreateGroup}
-            accessible={true}
-            accessibilityLabel="Create group button"
-          >
-            <Text style={styles.buttonText}>Create Group</Text>
-          </TouchableOpacity>
-        </View>
+        <AddGroupModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          newGroup={newGroup}
+          setNewGroup={setNewGroup}
+          handleAddGroup={handleCreateGroup}
+        />
       </View>
+      <RoundButton onPress={() => setModalVisible(true)} />
       <BottomTabView />
     </>
   );
@@ -121,7 +165,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: theme.colors.bgLight,
-    padding: 20, // Padding áp dụng chỉ với nội dung bên dưới AppHeader
+    padding: 20,
   },
   title: {
     fontSize: 30,
@@ -135,6 +179,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     color: theme.colors.textPrimary,
+  },
+  headerItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  input: {
+    backgroundColor: theme.colors.white,
+    paddingHorizontal: theme.spacing.medium,
+    paddingVertical: theme.spacing.small,
+    borderRadius: theme.borderRadius.full,
+    width: "100%",
+    ...theme.shadows.button,
+    height: 40,
   },
   groupList: {
     marginBottom: 20,
@@ -166,28 +223,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.colors.textSecondary,
   },
-  form: {
-    backgroundColor: "#f7f9ff",
-    padding: 20,
-    borderRadius: 10,
+  deleteButton: {
+    backgroundColor: theme.colors.danger,
+    padding: 5,
+    borderRadius: 5,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 15,
-    backgroundColor: "#fff",
-  },
-  button: {
-    backgroundColor: theme.colors.primary,
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  buttonText: {
+  deleteButtonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "bold",
   },
 });

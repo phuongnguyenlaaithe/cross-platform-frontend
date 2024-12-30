@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Modal,
   Text,
@@ -6,15 +7,16 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import theme from "../../theme";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewMealPlanAPI } from "../../redux/apiRequests/mealPlanRequest";
 import { TextInput } from "react-native-paper";
+import style from "../../screens/Styles";
 
 const statusOptions = ["DONE", "NOT_PASS_YET"];
 
-const AddMealScheduleModal = ({ currentDate, onClose }) => {
+const AddMealScheduleModal = ({ modalVisible, setModalVisible, currentDate }) => {
   const [selectedFoods, setSelectedFoods] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("DONE");
   const [selectedMeal, setSelectedMeal] = useState("");
@@ -42,67 +44,104 @@ const AddMealScheduleModal = ({ currentDate, onClose }) => {
       foodIds: selectedFoods,
       status: selectedStatus,
     });
-    onClose();
+    setModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setModalVisible(false);
   };
 
   return (
-    <View style={scheduleMealStyle.modalOverlay}>
-      <View style={scheduleMealStyle.modalContent}>
-        <Text style={scheduleMealStyle.modalTitle}>Add Meal Schedule</Text>
-        <Text style={scheduleMealStyle.label}>Meal:</Text>
-        <TextInput
-          value={selectedMeal}
-          onChangeText={setSelectedMeal}
-          style={{ marginBottom: theme.spacing.small, height: 40 }}
-        />
-        {/* Food Selection */}
-        <Text style={scheduleMealStyle.label}>Food:</Text>
-        <FlatList
-          data={foodItems}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => setModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: theme.spacing.medium,
+            }}
+          >
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Text
+                style={{
+                  color: theme.colors.primary,
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  marginTop: 5,
+                }}
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <Text style={[styles.title2, { textAlign: "center" }]}>
+              Add Meal Schedule
+            </Text>
+            <TouchableOpacity onPress={handleSaveMeal}>
+              <Text
+                style={{
+                  color: theme.colors.primary,
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  marginTop: 5,
+                }}
+              >
+                Save
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <TextInput
+            style={[styles.input, { marginBottom: theme.spacing.medium, height: 1 }]}
+            placeholder="Meal Name"
+            value={selectedMeal}
+            onChangeText={setSelectedMeal}
+          />
+
+          <Text style={styles.label}>Food:</Text>
+          <FlatList
+            data={foodItems}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => toggleFoodSelection(item)}
+                style={[
+                  styles.foodOption,
+                  selectedFoods.includes(item.id) && styles.selectedOption,
+                ]}
+              >
+                <Text>{item.name}</Text>
+              </TouchableOpacity>
+            )}
+            style={styles.foodList}
+          />
+
+          <Text style={styles.label}>Status:</Text>
+          {statusOptions.map((status) => (
             <TouchableOpacity
-              onPress={() => toggleFoodSelection(item)}
+              key={status}
+              onPress={() => setSelectedStatus(status)}
               style={[
-                scheduleMealStyle.foodOption,
-                selectedFoods.includes(item.id) &&
-                  scheduleMealStyle.selectedOption,
+                styles.statusOption,
+                selectedStatus === status && styles.selectedOption,
               ]}
             >
-              <Text>{item.name}</Text>
+              <Text>{status}</Text>
             </TouchableOpacity>
-          )}
-          style={scheduleMealStyle.foodList}
-        />
-
-        {/* Status Selection */}
-        <Text style={scheduleMealStyle.label}>Status:</Text>
-        {statusOptions.map((status) => (
-          <TouchableOpacity
-            key={status}
-            onPress={() => setSelectedStatus(status)}
-            style={[
-              scheduleMealStyle.statusOption,
-              selectedStatus === status && scheduleMealStyle.selectedOption,
-            ]}
-          >
-            <Text>{status}</Text>
-          </TouchableOpacity>
-        ))}
-
-        {/* Save Button */}
-        <TouchableOpacity
-          style={scheduleMealStyle.saveButton}
-          onPress={handleSaveMeal}
-        >
-          <Text style={scheduleMealStyle.saveButtonText}>Save</Text>
-        </TouchableOpacity>
+          ))}
+        </View>
       </View>
-    </View>
+    </Modal>
   );
 };
 
-const scheduleMealStyle = StyleSheet.create({
+const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "center",
@@ -120,10 +159,18 @@ const scheduleMealStyle = StyleSheet.create({
     shadowRadius: 5,
     maxHeight: "80%",
   },
-  modalTitle: {
+  title2: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: theme.spacing.medium,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 15,
+    backgroundColor: "#fff",
   },
   label: {
     fontSize: 16,
@@ -151,18 +198,6 @@ const scheduleMealStyle = StyleSheet.create({
   selectedOption: {
     borderColor: theme.colors.primary,
     backgroundColor: "#f0f8ff",
-  },
-  saveButton: {
-    backgroundColor: theme.colors.primary,
-    padding: theme.spacing.small,
-    borderRadius: 5,
-    marginTop: theme.spacing.medium,
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
   },
 });
 

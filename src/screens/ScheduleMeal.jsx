@@ -66,18 +66,11 @@ const ScheduleMeal = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Modal */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
         <AddMealScheduleModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
           currentDate={currentDate}
-          onClose={() => setModalVisible(false)}
         />
-      </Modal>
       <BottomTabView />
     </View>
   );

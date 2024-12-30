@@ -18,7 +18,7 @@ import {
 } from "../redux/apiRequests/groupRequest";
 import { leaveGroup } from "../redux/slices/groupsSlice";
 import * as ImagePicker from "expo-image-picker";
-import { AppHeader, BottomTabView } from "../components";
+import { AppHeader, BottomTabView, AddMemberModal } from "../components";
 import theme from "../theme/index";
 import axios from "axios";
 import { BASE_URL } from "../constants";
@@ -49,6 +49,7 @@ const GroupDetail = ({ route, navigation }) => {
   });
   const [groupName, setGroupName] = useState(group.name);
   const [isUpdatingInfo, setIsUpdatingInfo] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchUserProfiles = async () => {
@@ -76,6 +77,7 @@ const GroupDetail = ({ route, navigation }) => {
   const handleAddMember = async () => {
     await addMemberAPI(accessToken, groupId, [email], dispatch);
     setEmail("");
+    setModalVisible(false);
   };
 
   const handleRemoveMember = async (userId) => {
@@ -200,22 +202,21 @@ const GroupDetail = ({ route, navigation }) => {
         )}
 
         {isGroupAdmin ? (
-          <View style={groupDetailStyle.form}>
-            <Text style={groupDetailStyle.sectionHeader}>Add Member</Text>
-            <TextInput
-              style={groupDetailStyle.input}
-              placeholder="Enter member's email"
-              placeholderTextColor={theme.colors.textSecondary}
-              value={email}
-              onChangeText={setEmail}
-            />
+          <>
             <TouchableOpacity
               style={groupDetailStyle.button}
-              onPress={handleAddMember}
+              onPress={() => setModalVisible(true)}
             >
               <Text style={groupDetailStyle.buttonText}>Add Member</Text>
             </TouchableOpacity>
-          </View>
+            <AddMemberModal
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+              email={email}
+              setEmail={setEmail}
+              handleAddMember={handleAddMember}
+            />
+          </>
         ) : (
           <TouchableOpacity
             style={groupDetailStyle.button}
@@ -310,8 +311,9 @@ const groupDetailStyle = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     paddingVertical: theme.spacing.small,
     borderRadius: theme.borderRadius.medium,
-    marginVertical: theme.spacing.medium,
+    marginVertical: theme.spacing.small,
     alignItems: "center",
+    height: 40,
   },
   updateButton: {
     backgroundColor: theme.colors.primary,

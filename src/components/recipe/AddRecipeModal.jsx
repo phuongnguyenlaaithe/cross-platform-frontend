@@ -131,36 +131,6 @@ const AddRecipeModal = ({ onClose }) => {
             </Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: theme.colors.primary,
-            padding: theme.spacing.small,
-            borderRadius: theme.borderRadius.small,
-            alignItems: "center",
-            marginBottom: theme.spacing.medium,
-            width: 60,
-            alignSelf: "center",
-          }}
-          onPress={handleImageUpload}
-        >
-          <Ionicons
-            name="camera-outline"
-            size={24}
-            color={theme.colors.white}
-          />
-        </TouchableOpacity>
-        {newRecipe.htmlContentUri && (
-          <Image
-            source={{ uri: newRecipe.htmlContentUri }}
-            style={{
-              width: 150,
-              height: 150,
-              alignSelf: "center",
-              borderRadius: 100,
-            }}
-          />
-        )}
-
         <TextInput
           style={[
             styles.input,
@@ -178,7 +148,6 @@ const AddRecipeModal = ({ onClose }) => {
           value={newRecipe.name}
           onChangeText={(text) => setNewRecipe({ ...newRecipe, name: text })}
         />
-
         <View style={{ marginTop: theme.spacing.medium }}>
           <Text
             style={{
@@ -213,7 +182,7 @@ const AddRecipeModal = ({ onClose }) => {
               styles.input,
               {
                 marginTop: theme.spacing.small,
-                height: 150,
+                height: 100,
                 borderColor: theme.colors.primary,
                 borderRadius: theme.borderRadius.small,
                 borderWidth: 1,
@@ -230,6 +199,36 @@ const AddRecipeModal = ({ onClose }) => {
             }
           />
         </View>
+        <TouchableOpacity
+          style={{
+            backgroundColor: theme.colors.primary,
+            padding: theme.spacing.small,
+            borderRadius: theme.borderRadius.small,
+            alignItems: "center",
+            marginBottom: theme.spacing.medium,
+            marginTop: theme.spacing.medium,
+            width: 60,
+            alignSelf: "center",
+          }}
+          onPress={handleImageUpload}
+        >
+          <Ionicons
+            name="camera-outline"
+            size={24}
+            color={theme.colors.white}
+          />
+        </TouchableOpacity>
+        {newRecipe.htmlContentUri && (
+          <Image
+            source={{ uri: newRecipe.htmlContentUri }}
+            style={{
+              width: 150,
+              height: 150,
+              alignSelf: "center",
+              borderRadius: 100,
+            }}
+          />
+        )}
       </View>
     </View>
   );

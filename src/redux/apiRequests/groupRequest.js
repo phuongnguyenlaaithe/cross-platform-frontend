@@ -5,6 +5,7 @@ import {
   fetchGroupsSuccess,
   addGroup,
   updateGroup,
+  deleteGroup,
 } from "../slices/groupsSlice";
 import { BASE_URL } from "../../constants";
 
@@ -82,6 +83,18 @@ export const removeMemberAPI = async (
     dispatch(updateGroup(res.data));
   } catch (error) {
     console.error("Lỗi khi xóa thành viên:", error);
-    alert("Lỗi khi xóa thành viên");
+    alert("Lỗi khi xóa thành viên: " + error.response?.data?.response.message);
+
+  }
+};
+
+export const deleteGroupAPI = async (accessToken, groupId, dispatch) => {
+  try {
+    await axios.delete(`${BASE_URL}/user/group/${groupId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    dispatch(deleteGroup(groupId));
+  } catch (error) {
+    alert("Chỉ admin nhóm mới được xóa" );
   }
 };

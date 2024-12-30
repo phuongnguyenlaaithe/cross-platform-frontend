@@ -16,7 +16,8 @@ import AddMeasurementModal from "./measurement-list/AddMeasurementModal";
 import MeasurementItem from "./measurement-list/MeasurementItem";
 import UserItem from "./user-list/UserItem";
 import BottomTabViewAdmin from "./BottomTabViewAdmin";
-
+import AddGroupModal from "./group/AddGroupModal";
+import AddMemberModal from "./group/AddMemberModal";
 export {
     AppHeader,
     CommonButton,
@@ -36,4 +37,6 @@ export {
     MeasurementItem,
     UserItem,
     BottomTabViewAdmin,
+    AddGroupModal,
+    AddMemberModal,
 };

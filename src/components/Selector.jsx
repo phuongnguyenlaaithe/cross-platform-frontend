@@ -12,7 +12,7 @@ const Selector = ({ data, onSelect }) => {
         }}
       >
         {data.map((item, index) => (
-          <Picker.Item key={index} label={item.label} value={item.value} />
+          <Picker.Item key={index} label={item.label} value={item.value.toString()} />
         ))}
       </Picker>
     </View>

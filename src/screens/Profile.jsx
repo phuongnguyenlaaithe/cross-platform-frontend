@@ -138,8 +138,8 @@ const Profile = ({ navigation }) => {
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={style.saveButton} onPress={handleLogout}>
-          <Text style={style.saveButtonText}>Log out</Text>
+        <TouchableOpacity style={style.logoutButton} onPress={handleLogout}>
+          <Text style={style.logoutButtonText}>Log out</Text>
         </TouchableOpacity>
       </View>
       <BottomTabView />
@@ -183,6 +183,19 @@ const style = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  logoutButton: {
+    backgroundColor: theme.colors.black,
+    padding: theme.spacing.medium,
+    borderRadius: theme.borderRadius.small,
+    alignItems: 'center',
+    marginTop: theme.spacing.medium,
+  },
+  logoutButtonText: {
+    color: theme.colors.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+
 });
 
 export default Profile;
